@@ -1,0 +1,1263 @@
+[
+  uuid(6F2F99A0-6600-11D3-B331-525400E8C92C), 
+  version(1.0), 
+  helpstring("CSI\'s Unfair Advantage® Library")
+    
+]
+library UA
+{
+
+  importlib("stdole2.tlb");
+
+  [
+    uuid(6F2F99A1-6600-11D3-B331-525400E8C92C), 
+    version(1.113), 
+    helpstring("Dispatch interface for API2 Object"), 
+    dual, 
+    oleautomation
+  ]
+   interface IAPI2: IDispatch
+  {
+    [
+    propget, 
+    id(0x00000001)
+    ]
+    HRESULT _stdcall MarketNumber([out, retval] long * Value );
+    [
+    propput, 
+    id(0x00000001)
+    ]
+    HRESULT _stdcall MarketNumber([in] long Value );
+    [
+    propget, 
+    id(0x00000002)
+    ]
+    HRESULT _stdcall MarketSymbol([out, retval] BSTR * Value );
+    [
+    propput, 
+    id(0x00000002)
+    ]
+    HRESULT _stdcall MarketSymbol([in] BSTR Value );
+    [
+    propget, 
+    id(0x00000003)
+    ]
+    HRESULT _stdcall FirstDate([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000004)
+    ]
+    HRESULT _stdcall LastDate([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000005)
+    ]
+    HRESULT _stdcall Exchange([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000006)
+    ]
+    HRESULT _stdcall MarketName([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000007)
+    ]
+    HRESULT _stdcall ConversionFactor([out, retval] short * Value );
+    [
+    propget, 
+    id(0x00000008)
+    ]
+    HRESULT _stdcall TradingUnits([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000009)
+    ]
+    HRESULT _stdcall ContractSize([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x0000000A)
+    ]
+    HRESULT _stdcall PointValue([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x0000000B)
+    ]
+    HRESULT _stdcall ValidMonths([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x0000000C)
+    ]
+    HRESULT _stdcall MinTickInPoints([out, retval] float * Value );
+    [
+    propget, 
+    id(0x0000000F)
+    ]
+    HRESULT _stdcall ShortMarketSymbol([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000010)
+    ]
+    HRESULT _stdcall Currency([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000012)
+    ]
+    HRESULT _stdcall NumContracts([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000013)
+    ]
+    HRESULT _stdcall ContractFirstDate([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000014)
+    ]
+    HRESULT _stdcall ContractLastDate([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000015)
+    ]
+    HRESULT _stdcall FillInCashPrice([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000015)
+    ]
+    HRESULT _stdcall FillInCashPrice([in] short Value );
+    [
+    propget, 
+    id(0x00000016)
+    ]
+    HRESULT _stdcall IncludeHolidays([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000016)
+    ]
+    HRESULT _stdcall IncludeHolidays([in] short Value );
+    [
+    propget, 
+    id(0x00000017)
+    ]
+    HRESULT _stdcall ShowDecimalPoint([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000017)
+    ]
+    HRESULT _stdcall ShowDecimalPoint([in] short Value );
+    [
+    propget, 
+    id(0x00000018)
+    ]
+    HRESULT _stdcall NumDaysConfirmation([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000018)
+    ]
+    HRESULT _stdcall NumDaysConfirmation([in] short Value );
+    [
+    propget, 
+    id(0x00000019)
+    ]
+    HRESULT _stdcall detrendMethod([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000019)
+    ]
+    HRESULT _stdcall detrendMethod([in] short Value );
+    [
+    propget, 
+    id(0x0000001A)
+    ]
+    HRESULT _stdcall ContractDeliveryCode([out, retval] long * Value );
+    [
+    propget, 
+    id(0x0000001B)
+    ]
+    HRESULT _stdcall DBWasUpdated([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000001B)
+    ]
+    HRESULT _stdcall DBWasUpdated([in] short Value );
+    [
+    id(0x0000001C)
+    ]
+    long _stdcall FindMarketNumber( void );
+    [
+    id(0x0000001D)
+    ]
+    short _stdcall GetMarketProfile( void );
+    [
+    id(0x0000001E)
+    ]
+    long _stdcall GetFirstMarketProfile( void );
+    [
+    id(0x0000001F)
+    ]
+    long _stdcall GetNextMarketProfile( void );
+    [
+    id(0x00000020)
+    ]
+    long _stdcall BuildContractList([in] long MarketNumber, [in] short IsStock, [in] short IsOption );
+    [
+    id(0x00000021)
+    ]
+    short _stdcall InvalidateContractList( void );
+    [
+    id(0x00000022)
+    ]
+    long _stdcall GetNextContractDetails( void );
+    [
+    id(0x00000023)
+    ]
+    long _stdcall GetContractDeliveryCode([in] long index );
+    [
+    id(0x00000024)
+    ]
+    long _stdcall GetContractFirstDate([in] long index );
+    [
+    id(0x00000026)
+    ]
+    long _stdcall GetContractLastDate([in] long index );
+    [
+    id(0x00000027)
+    ]
+    long _stdcall RetrieveContract([in] long MarketNumber, [in] long ContractDeliveryCode, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x00000028)
+    ]
+    long _stdcall CopyDataToClipboard( void );
+    [
+    id(0x00000029)
+    ]
+    long _stdcall GetUAStrClipFormat( void );
+    [
+    id(0x0000002A)
+    ]
+    long _stdcall RetrieveNthNearestFuture([in] long MarketNumber, [in] short TargetForwardContract, [in] short rollLogicType, [in] short rollWhenVOIKnown, [in] short DayOfMonthToRoll, [in] short MonthsPriorToRoll, [in] BSTR ValidMonths, [in] short GenerateForward, [in] short RollAtLeastNDaysBeforeExpiration, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x0000002B)
+    ]
+    long _stdcall RetrieveNearestFutures([in] long MarketNumber, [in] short NumOfFuturesToInclude, [in] short DayOfMonthToRoll, [in] short MonthsPriorToRoll, [in] short IncludeCash, [in] BSTR ValidMonths, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x0000002C)
+    ]
+    long _stdcall RetrieveBackAdjustedContract([in] long MarketNumber, [in] short rollLogicType, [in] short rollWhen, [in] short DayOfMonthToRoll, [in] short MonthsPriorToRoll, [in] short accumulationMethod, [in] short rollDeltaType, [in] BSTR ValidMonths, [in] short GenerateForward, [in] short RollAtLeastNDaysBeforeExpiration, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x0000002D)
+    ]
+    long _stdcall RetrievePerpetualContract([in] long MarketNumber, [in] short MonthsAheadToViewMarket, [in] short OIWeighted, [in] short DayOfMonthToRoll, [in] short MonthsPriorToRoll, [in] BSTR ValidMonths, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x0000002E)
+    ]
+    long _stdcall RetrieveGannContract([in] long MarketNumber, [in] short DeliveryMonthToView, [in] short DayOfMonthToRoll, [in] short MonthsPriorToRoll, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x0000002F)
+    ]
+    long _stdcall CombineDataToClipboard([in] short Period );
+    [
+    id(0x00000030)
+    ]
+    long _stdcall RetrieveStock([in] long MarketNumber, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    propget, 
+    id(0x00000031)
+    ]
+    HRESULT _stdcall ErrorMessage([out, retval] BSTR * Value );
+    [
+    propput, 
+    id(0x00000031)
+    ]
+    HRESULT _stdcall ErrorMessage([in] BSTR Value );
+    [
+    propget, 
+    id(0x00000032)
+    ]
+    HRESULT _stdcall IncludeSaturdays([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000032)
+    ]
+    HRESULT _stdcall IncludeSaturdays([in] short Value );
+    [
+    propget, 
+    id(0x00000033)
+    ]
+    HRESULT _stdcall IsStock([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000033)
+    ]
+    HRESULT _stdcall IsStock([in] short Value );
+    [
+    id(0x00000011)
+    ]
+    long _stdcall RetrieveOptionSeries([in] long MarketNumber, [in] short IsStock, [in] long ContractDeliveryCode, [in] long StrikePrice, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    propget, 
+    id(0x00000025)
+    ]
+    HRESULT _stdcall ContractStrikePrice([out, retval] long * Value );
+    [
+    id(0x00000034)
+    ]
+    long _stdcall GetContractStrikePrice([in] long index );
+    [
+    propget, 
+    id(0x00000035)
+    ]
+    HRESULT _stdcall OptionConversionFactor([out, retval] short * Value );
+    [
+    id(0x00000036)
+    ]
+    HRESULT _stdcall UpdateDatabase( void );
+    [
+    propget, 
+    id(0x00000037)
+    ]
+    HRESULT _stdcall AggregateVolAs([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000037)
+    ]
+    HRESULT _stdcall AggregateVolAs([in] short Value );
+    [
+    propget, 
+    id(0x00000038)
+    ]
+    HRESULT _stdcall AggregateOiAs([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000038)
+    ]
+    HRESULT _stdcall AggregateOiAs([in] short Value );
+    [
+    propget, 
+    id(0x00000039)
+    ]
+    HRESULT _stdcall AggregateCashAs([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000039)
+    ]
+    HRESULT _stdcall AggregateCashAs([in] short Value );
+    [
+    id(0x0000003A)
+    ]
+    HRESULT _stdcall ConvertPointsToDecimal([in] short cvf, [in] float MinTicks, [in] long pnts, [out, retval] double * dec );
+    [
+    id(0x0000003B)
+    ]
+    HRESULT _stdcall ConvertDecimalToPoints([in] short cvf, [in] double dec, [out, retval] long * pnts );
+    [
+    id(0x0000003C)
+    ]
+    HRESULT _stdcall LaunchStockScanChart([in] long csinum, [in] short IsStock, [in] long StartDate );
+    [
+    id(0x0000003D)
+    ]
+    long _stdcall RetrievePutCallRatio([in] long MarketNumber, [in] short IsStock, [in] long StartDate, [in] long StopDate );
+    [
+    id(0x0000003E)
+    ]
+    long _stdcall CopyRetrievedDataToArray([in] short Period, [out] VARIANT * DateArray, [out] VARIANT * DOWArray, [out] VARIANT * DydmArray, [out] VARIANT * OpenArray, [out] VARIANT * HighArray, [out] VARIANT * LowArray, [out] VARIANT * CloseArray, [out] VARIANT * ClosingBidArray, [out] VARIANT * ClosingAskArray, [out] VARIANT * VolumeArray, [out] VARIANT * OIArray, [out] VARIANT * TotalVolumeArray, [out] VARIANT * TotalOIArray, [out] VARIANT * CashArray );
+    [
+    id(0x0000003F)
+    ]
+    HRESULT _stdcall AddStockScanResultToPortfolio([in] BSTR SeriesList, [in] long StartDate );
+    [
+    propget, 
+    id(0x00000041)
+    ]
+    HRESULT _stdcall WindowState([out, retval] long * Value );
+    [
+    propput, 
+    id(0x00000041)
+    ]
+    HRESULT _stdcall WindowState([in] long Value );
+    [
+    propget, 
+    id(0x00000040)
+    ]
+    HRESULT _stdcall HoldUAOpenOnClose([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000040)
+    ]
+    HRESULT _stdcall HoldUAOpenOnClose([in] short Value );
+    [
+    id(0x00000043)
+    ]
+    HRESULT _stdcall AddUserEdit([in] BSTR Cmd );
+    [
+    id(0x00000044)
+    ]
+    HRESULT _stdcall RemoveUserEdit([in] long csinum, [in] short IsStock, [in] long date, [in] long dydm, [in] long strike );
+    [
+    propget, 
+    id(0x00000045)
+    ]
+    HRESULT _stdcall VersionNumber([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000046)
+    ]
+    HRESULT _stdcall UseAlternateBackAdjuster([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000046)
+    ]
+    HRESULT _stdcall UseAlternateBackAdjuster([in] short Value );
+    [
+    propget, 
+    id(0x0000000D)
+    ]
+    HRESULT _stdcall RaiseNegBackAdjustSeries([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000000D)
+    ]
+    HRESULT _stdcall RaiseNegBackAdjustSeries([in] short Value );
+    [
+    propget, 
+    id(0x0000000E)
+    ]
+    HRESULT _stdcall ApplyCommodityAdjustments([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000000E)
+    ]
+    HRESULT _stdcall ApplyCommodityAdjustments([in] short Value );
+    [
+    propget, 
+    id(0x00000042)
+    ]
+    HRESULT _stdcall ApplyStockSplitAdjustments([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000042)
+    ]
+    HRESULT _stdcall ApplyStockSplitAdjustments([in] short Value );
+    [
+    propget, 
+    id(0x00000047)
+    ]
+    HRESULT _stdcall ApplyStockDividendAdjustments([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000047)
+    ]
+    HRESULT _stdcall ApplyStockDividendAdjustments([in] short Value );
+    [
+    propget, 
+    id(0x00000048)
+    ]
+    HRESULT _stdcall PropStockAdjustments([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000048)
+    ]
+    HRESULT _stdcall PropStockAdjustments([in] short Value );
+    [
+    propget, 
+    id(0x00000049)
+    ]
+    HRESULT _stdcall CloseOutOfRangeAdjustmentMethod([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000049)
+    ]
+    HRESULT _stdcall CloseOutOfRangeAdjustmentMethod([in] short Value );
+    [
+    propget, 
+    id(0x0000004A)
+    ]
+    HRESULT _stdcall RoundToTick([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000004A)
+    ]
+    HRESULT _stdcall RoundToTick([in] short Value );
+    [
+    propget, 
+    id(0x0000004B)
+    ]
+    HRESULT _stdcall CoverMutualFundHigh([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000004B)
+    ]
+    HRESULT _stdcall CoverMutualFundHigh([in] short Value );
+    [
+    propget, 
+    id(0x0000004C)
+    ]
+    HRESULT _stdcall RoundUpDateToEndOfPeriod([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000004C)
+    ]
+    HRESULT _stdcall RoundUpDateToEndOfPeriod([in] short Value );
+    [
+    propget, 
+    id(0x0000004D)
+    ]
+    HRESULT _stdcall OnHolidaysUsePreviousData([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000004D)
+    ]
+    HRESULT _stdcall OnHolidaysUsePreviousData([in] short Value );
+    [
+    propget, 
+    id(0x0000004E)
+    ]
+    HRESULT _stdcall OnHolidaysUseCloseOnly([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000004E)
+    ]
+    HRESULT _stdcall OnHolidaysUseCloseOnly([in] short Value );
+    [
+    id(0x0000004F)
+    ]
+    HRESULT _stdcall EncryptStockAdjustments( void );
+    [
+    propget, 
+    id(0x00000050)
+    ]
+    HRESULT _stdcall AggregateDateAsLastRecord([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000050)
+    ]
+    HRESULT _stdcall AggregateDateAsLastRecord([in] short Value );
+    [
+    propget, 
+    id(0x00000051)
+    ]
+    HRESULT _stdcall AggregateDayOfWeekAs([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000051)
+    ]
+    HRESULT _stdcall AggregateDayOfWeekAs([in] short Value );
+    [
+    id(0x00000052)
+    ]
+    HRESULT _stdcall GetPortfolioContents([in] long PortfolioIndex, [out, retval] BSTR * Content );
+    [
+    id(0x00000053)
+    ]
+    HRESULT _stdcall UpdateDatabaseFromCompletedDownload( void );
+    [
+    id(0x00000054)
+    ]
+    HRESULT _stdcall CopyRetrievedDataToArray2([in] short Period, [out] VARIANT * IntResultArray, [out] VARIANT * FltResultArray, [out, retval] long * NumRecords );
+    [
+    id(0x00000055)
+    ]
+    HRESULT _stdcall RetrieveSnapShot([in] long MarketNumber, [in] short IsStock, [in] short IsOption, [in] long ContractDeliveryCode, [in] long StrikePrice, [in] long LoadStartDate, [in] long LoadEndDate, [out] VARIANT * IntResultArray, [out] VARIANT * FltResultArray, [out, retval] long * NumRecords );
+    [
+    id(0x00000056)
+    ]
+    HRESULT _stdcall RetrieveAdjAndUnadjStock([in] long MarketNumber, [in] long LoadStartDate, [in] long LoadEndDate, [out] VARIANT * IntResultArray, [out] VARIANT * FltResultArray, [out, retval] long * NumRecords );
+    [
+    propget, 
+    id(0x00000057)
+    ]
+    HRESULT _stdcall SkipTotalVolumeAndTotalOpenInterest([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000057)
+    ]
+    HRESULT _stdcall SkipTotalVolumeAndTotalOpenInterest([in] short Value );
+    [
+    id(0x00000058)
+    ]
+    HRESULT _stdcall RemoveStockScanResultFromPortfolio([in] long PortfolioIndex, [in] BSTR SeriesList, [in] short AskForConfirmation );
+    [
+    id(0x00000059)
+    ]
+    HRESULT _stdcall SetDownloadDate([in] long CollectionGroupIndex, [in] long date, [in] short Overwrite );
+    [
+    propget, 
+    id(0x0000005A)
+    ]
+    HRESULT _stdcall PropStockVolumeAdjustments([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000005A)
+    ]
+    HRESULT _stdcall PropStockVolumeAdjustments([in] short Value );
+    [
+    propget, 
+    id(0x0000005B)
+    ]
+    HRESULT _stdcall EarningsPerShare([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000005C)
+    ]
+    HRESULT _stdcall SharesOutstanding([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000005D)
+    ]
+    HRESULT _stdcall NumInstitutionalShareHolders([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000005E)
+    ]
+    HRESULT _stdcall PercentageOfSharesHeldByInstitutions([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000005F)
+    ]
+    HRESULT _stdcall StockBeta([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000060)
+    ]
+    HRESULT _stdcall RevenueGrowth5Year([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000061)
+    ]
+    HRESULT _stdcall DividendGrowth5Year([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000062)
+    ]
+    HRESULT _stdcall DividendYield([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000063)
+    ]
+    HRESULT _stdcall LatestAnnualTotalNetIncome([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000064)
+    ]
+    HRESULT _stdcall PE5YearAverage([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000065)
+    ]
+    HRESULT _stdcall LatestAnnualOperatingRevenue([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000066)
+    ]
+    HRESULT _stdcall IncomeGrowth5Year([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000067)
+    ]
+    HRESULT _stdcall PriceEarningsRatio([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000068)
+    ]
+    HRESULT _stdcall EarningsPerShare1QtrAgo([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x00000069)
+    ]
+    HRESULT _stdcall EarningsPerShare2QtrAgo([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000006A)
+    ]
+    HRESULT _stdcall EarningsPerShare3QtrAgo([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000006B)
+    ]
+    HRESULT _stdcall EarningsPerShare4QtrAgo([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000006C)
+    ]
+    HRESULT _stdcall EarningsPerShareTotalLastYear([out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000006D)
+    ]
+    HRESULT _stdcall HasStockFundamentalData([out, retval] short * Value );
+    [
+    propget, 
+    id(0x0000006E)
+    ]
+    HRESULT _stdcall WholePointValue([in] long MarketNumber, [in] short IsStock, [in] short IsOption, [out, retval] VARIANT * Value );
+    [
+    propget, 
+    id(0x0000006F)
+    ]
+    HRESULT _stdcall EPSGrowth5Year([out, retval] VARIANT * Value );
+    [
+    id(0x00000070)
+    ]
+    HRESULT _stdcall PerformXmlCommands([in] BSTR XmlText, [out, retval] BSTR * XmlResults );
+    [
+    id(0x00000071)
+    ]
+    HRESULT _stdcall AddCsinumToRefreshHistoryList([in] long csinum, [in] short IsStock, [in] short IsOption, [in] short PromptForImmediateDownload );
+    [
+    id(0x00000072)
+    ]
+    HRESULT _stdcall RemoveUserEdit2([in] BSTR Cmd );
+    [
+    id(0x00000073)
+    ]
+    long _stdcall RetrieveMysteryIndex([in] long MarketNumber, [in] short IsStock, [in] long StartDate, [in] long StopDate );
+    [
+    propget, 
+    id(0x00000074)
+    ]
+    HRESULT _stdcall UseTradeableTick([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000074)
+    ]
+    HRESULT _stdcall UseTradeableTick([in] short Value );
+    [
+    id(0x00000075)
+    ]
+    HRESULT _stdcall AddMetaFileToRefreshHistoryList([in] BSTR BaseFileName, [in] short PromptForImmediateDownload );
+    [
+    propget, 
+    id(0x00000076)
+    ]
+    HRESULT _stdcall FirstOptionDate([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000077)
+    ]
+    HRESULT _stdcall LastOptionDate([out, retval] long * Value );
+    [
+    id(0x00000078)
+    ]
+    HRESULT _stdcall CombineDataToClipboard2([in] short Period, [in] BSTR Separator );
+    [
+    id(0x00000079)
+    ]
+    HRESULT _stdcall RetrieveCashSeries([in] long MarketNumber, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x0000007A)
+    ]
+    HRESULT _stdcall RetrieveNumericalSeries([in] long MarketNumber, [in] long LoadStartDate, [in] long LoadEndDate );
+    [
+    id(0x0000007B)
+    ]
+    long _stdcall RetrieveBackAdjustedContract2([in] long MarketNumber, [in] short rollLogicType, [in] short rollWhen, [in] short DayOfMonthToRoll, [in] short MonthsPriorToRoll, [in] short accumulationMethod, [in] short rollDeltaType, [in] BSTR ValidMonths, [in] short GenerateForward, [in] short RollAtLeastNDaysBeforeExpiration, [in] long LoadStartDate, [in] long LoadEndDate, [in] short ProportionalAdjustment );
+    [
+    propget, 
+    id(0x0000007C)
+    ]
+    HRESULT _stdcall LastDownloadDate([out, retval] long * Value );
+    [
+    propput, 
+    id(0x0000007C)
+    ]
+    HRESULT _stdcall LastDownloadDate([in] long Value );
+    [
+    id(0x0000007D)
+    ]
+    HRESULT _stdcall UpdateDatabase2([in] long WaitForTransmissionId, [in] long CollectGroupIndex );
+    [
+    id(0x0000007E)
+    ]
+    HRESULT _stdcall RetrieveDividendsSplitsAndCapitalGains([in] long MarketNumber, [in] short IsStock, [in] long LoadStartDate, [in] long LoadEndDate, [out] long * NumDividends, [out] long * NumCapitalGains, [out] long * NumSplits, [out] VARIANT * DivDateList, [out] VARIANT * DividendList, [out] VARIANT * CapDateList, [out] VARIANT * CapitalGainsList, [out] VARIANT * SplitDateList, [out] VARIANT * SplitToList, [out] VARIANT * SplitFromList );
+    [
+    id(0x0000007F)
+    ]
+    HRESULT _stdcall DBIntegritySearch( void );
+    [
+    id(0x00000080)
+    ]
+    HRESULT _stdcall GetFirstSubscriberMarket([in] int IsStock, [in] int IsOption, [out, retval] BSTR * XMLResult );
+    [
+    id(0x00000081)
+    ]
+    HRESULT _stdcall GetNextSubscriberMarket([out, retval] BSTR * XMLResult );
+    [
+    id(0x00000082)
+    ]
+    HRESULT _stdcall GetFirstSubcriberContract([in] long csinum, [in] long IsStock, [in] long IsOption, [in] long StartDate, [out, retval] BSTR * XMLResult );
+    [
+    id(0x00000083)
+    ]
+    HRESULT _stdcall GetNextSubscriberContract([out, retval] BSTR * XMLResult );
+    [
+    id(0x00000084)
+    ]
+    HRESULT _stdcall ReleaseConnection( void );
+    [
+    id(0x00000085)
+    ]
+    HRESULT _stdcall GetFastMarketProfile([out, retval] HRESULT * success );
+    [
+    propget, 
+    id(0x00000086)
+    ]
+    HRESULT _stdcall AvgTotalVolume([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000088)
+    ]
+    HRESULT _stdcall ContractExpiryDate([out, retval] long * Value );
+  };
+
+  [
+    uuid(6F2F99A3-6600-11D3-B331-525400E8C92C), 
+    version(1.0), 
+    helpstring("API2 Object")
+  ]
+  coclass API2
+  {
+    [default] interface IAPI2;
+  };
+
+  [
+    uuid(F9EBB714-9476-4EA4-8F4C-1CB041E57708), 
+    version(1.66), 
+    helpstring("Dispatch interface for UAScriptCallBackObject Object"), 
+    dual, 
+    oleautomation
+  ]
+   interface IUAScriptCallBackObject: IDispatch
+  {
+    [
+    propget, 
+    id(0x00000001)
+    ]
+    HRESULT _stdcall NumReturns([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000001)
+    ]
+    HRESULT _stdcall NumReturns([in] short Value );
+    [
+    id(0x00000002)
+    ]
+    HRESULT _stdcall SetChartPrices([in] long MaxNumBars, [in] SAFEARRAY(long) * IntParms, [in] SAFEARRAY(double) * FloatParms, [in] long csinum1, [in] short IsStock1, [in] short IsOption1, [in] long csinum2, [in] short IsStock2, [in] short IsOption2, [in] short cvf, [in] BSTR InitialTitle, [in] short MostRecentFirst );
+    [
+    id(0x00000003)
+    ]
+    HRESULT _stdcall GetPrice([in] short Field, [in] short Bar, [out, retval] double * Value );
+    [
+    id(0x00000004)
+    ]
+    HRESULT _stdcall GetDate([in] short Bar, [out, retval] long * Value );
+    [
+    id(0x00000005)
+    ]
+    HRESULT _stdcall GetVol([in] short Bar, [out, retval] long * Value );
+    [
+    id(0x00000006)
+    ]
+    HRESULT _stdcall SetReturn([in] short index, [in] VARIANT Value, [in, defaultvalue("")] BSTR Name, [in, defaultvalue("")] BSTR DisplayFormat );
+    [
+    propget, 
+    id(0x00000007)
+    ]
+    HRESULT _stdcall CurrentDate([out, retval] long * Value );
+    [
+    id(0x00000008)
+    ]
+    HRESULT _stdcall GetReturn([in] short index, [out, retval] VARIANT * Value );
+    [
+    id(0x00000009)
+    ]
+    HRESULT _stdcall GetReturnName([in] long index, [out, retval] BSTR * Name );
+    [
+    propget, 
+    id(0x0000000A)
+    ]
+    HRESULT _stdcall NumDataDays([out, retval] long * Value );
+    [
+    propget, 
+    id(0x0000000B)
+    ]
+    HRESULT _stdcall Title([out, retval] BSTR * Value );
+    [
+    propput, 
+    id(0x0000000B)
+    ]
+    HRESULT _stdcall Title([in] BSTR Value );
+    [
+    id(0x0000000C)
+    ]
+    HRESULT _stdcall GetDisplayFormat([in] long index, [out, retval] BSTR * DisplayFormat );
+    [
+    id(0x0000000D)
+    ]
+    HRESULT _stdcall GetOi([in] short Bar, [out, retval] long * Value );
+    [
+    propget, 
+    id(0x0000000E)
+    ]
+    HRESULT _stdcall Name([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x0000000F)
+    ]
+    HRESULT _stdcall Symbol([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000010)
+    ]
+    HRESULT _stdcall SectorCode([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000011)
+    ]
+    HRESULT _stdcall IndustryCode([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000012)
+    ]
+    HRESULT _stdcall Exchange([out, retval] BSTR * Value );
+    [
+    propget, 
+    id(0x00000013)
+    ]
+    HRESULT _stdcall cvf([out, retval] short * Value );
+    [
+    propget, 
+    id(0x00000014)
+    ]
+    HRESULT _stdcall csinum([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000015)
+    ]
+    HRESULT _stdcall IsStock([out, retval] short * Value );
+    [
+    propget, 
+    id(0x00000016)
+    ]
+    HRESULT _stdcall MostRecentDataEarlyInArray([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000016)
+    ]
+    HRESULT _stdcall MostRecentDataEarlyInArray([in] short Value );
+    [
+    id(0x00000017)
+    ]
+    HRESULT _stdcall SetDayData([in] int NumDataDays, [in] int Position, [in] double TradeEntryPrice );
+    [
+    propget, 
+    id(0x00000018)
+    ]
+    HRESULT _stdcall Position([out, retval] long * Value );
+    [
+    id(0x00000019)
+    ]
+    HRESULT _stdcall PlaceOrder([in] BSTR Verb, [in] BSTR EntryName, [in] BSTR ExitName, [in] int Timing, [in] int Quantity, [in] BSTR Conditional, [in] double StopPrice, [in] double LimitPrice, [in] long OCOIndex, [out, retval] long * OrderIndex );
+    [
+    id(0x0000001A)
+    ]
+    HRESULT _stdcall GetNumOrders([out, retval] int * Count );
+    [
+    propget, 
+    id(0x0000001B)
+    ]
+    HRESULT _stdcall ContractSize([out, retval] BSTR * Value );
+    [
+    id(0x0000001C)
+    ]
+    HRESULT _stdcall GetOrder([in] int Id, [out] BSTR * Verb, [out] BSTR * EntryName, [out] BSTR * ExitName, [out] int * Timing, [out] int * Quantity, [out] BSTR * Conditional, [out] double * StopPrice, [out] double * LimitPrice, [out] long * OCOIndex );
+    [
+    propget, 
+    id(0x0000001D)
+    ]
+    HRESULT _stdcall SharePriceScale([out, retval] short * Value );
+    [
+    propput, 
+    id(0x0000001D)
+    ]
+    HRESULT _stdcall SharePriceScale([in] short Value );
+    [
+    propget, 
+    id(0x0000001E)
+    ]
+    HRESULT _stdcall IsOption([out, retval] short * Value );
+    [
+    propget, 
+    id(0x0000001F)
+    ]
+    HRESULT _stdcall csinum2([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000020)
+    ]
+    HRESULT _stdcall IsStock2([out, retval] short * Value );
+    [
+    propget, 
+    id(0x00000021)
+    ]
+    HRESULT _stdcall IsOption2([out, retval] short * Value );
+    [
+    id(0x00000022)
+    ]
+    HRESULT _stdcall GetPointValueInCurrency([in] BSTR Currency, [out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000023)
+    ]
+    HRESULT _stdcall CurrentEarningsPerShare([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000024)
+    ]
+    HRESULT _stdcall SharesOutstanding([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000025)
+    ]
+    HRESULT _stdcall NumInstitutionalShareHolders([out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000026)
+    ]
+    HRESULT _stdcall PercentageOfSharesHeldByInstitutions([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000027)
+    ]
+    HRESULT _stdcall PointValue([out, retval] double * Value );
+    [
+    id(0x00000028)
+    ]
+    HRESULT _stdcall SetScanPrices([in] short NumBars, [in] SAFEARRAY(double) * Prices, [in] SAFEARRAY(long) * Dates );
+    [
+    id(0x00000029)
+    ]
+    HRESULT _stdcall SetSeriesId([in] long csinum1, [in] short IsStock1, [in] short IsOption1, [in] long csinum2, [in] short IsStock2, [in] short IsOption2, [in] short IsChartStudy );
+    [
+    propget, 
+    id(0x0000002A)
+    ]
+    HRESULT _stdcall StockBeta([out, retval] double * Value );
+    [
+    propget, 
+    id(0x0000002B)
+    ]
+    HRESULT _stdcall RevenueGrowth5Year([out, retval] double * Value );
+    [
+    propget, 
+    id(0x0000002C)
+    ]
+    HRESULT _stdcall DividendGrowth5Year([out, retval] double * Value );
+    [
+    propget, 
+    id(0x0000002D)
+    ]
+    HRESULT _stdcall DividendYield([out, retval] double * Value );
+    [
+    propget, 
+    id(0x0000002E)
+    ]
+    HRESULT _stdcall LatestAnnualTotalNetIncome([out, retval] double * Value );
+    [
+    propget, 
+    id(0x0000002F)
+    ]
+    HRESULT _stdcall PE5YearAverage([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000030)
+    ]
+    HRESULT _stdcall LatestAnnualOperatingRevenue([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000031)
+    ]
+    HRESULT _stdcall IncomeGrowth5Year([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000032)
+    ]
+    HRESULT _stdcall PriceEarningsRatio([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000033)
+    ]
+    HRESULT _stdcall EarningsPerShare1QtrAgo([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000034)
+    ]
+    HRESULT _stdcall EarningsPerShare2QtrAgo([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000035)
+    ]
+    HRESULT _stdcall EarningsPerShare3QtrAgo([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000036)
+    ]
+    HRESULT _stdcall EarningsPerShare4QtrAgo([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000037)
+    ]
+    HRESULT _stdcall EarningsPerShareTotalLastYear([out, retval] double * Value );
+    [
+    propget, 
+    id(0x00000038)
+    ]
+    HRESULT _stdcall TradeEntryPrice([out, retval] double * Value );
+    [
+    propget, 
+    id(0x0000003A)
+    ]
+    HRESULT _stdcall HasStockFundamentalData([out, retval] long * Value );
+    [
+    id(0x00000039)
+    ]
+    HRESULT _stdcall InternalizedADX([in] long Period );
+    [
+    id(0x0000003B)
+    ]
+    HRESULT _stdcall InternalizedBollingerBands([in] long Period, [in] double Deviations );
+    [
+    id(0x0000003C)
+    ]
+    HRESULT _stdcall InternalizedVolatility([in] long Period, [out, retval] VARIANT * Return );
+    [
+    id(0x0000003D)
+    ]
+    HRESULT _stdcall InternalizedMacd([in] long Period1, [in] long Period2, [in] long Period3, [out, retval] VARIANT * Return );
+    [
+    id(0x0000003E)
+    ]
+    HRESULT _stdcall InternalizedPercentageR([in] long Period, [out, retval] VARIANT * Return );
+    [
+    id(0x0000003F)
+    ]
+    HRESULT _stdcall InternalizedUltimateOscillator([in] long Period1, [in] long Period2, [in] long Period3, [out, retval] VARIANT * Return );
+    [
+    id(0x00000040)
+    ]
+    HRESULT _stdcall InternalizedAverageTrueRange([in] long Period, [out, retval] VARIANT * Return );
+    [
+    id(0x00000041)
+    ]
+    HRESULT _stdcall InternalizedTrueRange([in] long index, [out, retval] VARIANT * Return );
+    [
+    id(0x00000042)
+    ]
+    HRESULT _stdcall InternalizedStochastic([in] long Size, [in] long Period1, [in] long Period2, [in] short ShowPercentK );
+    [
+    id(0x00000043)
+    ]
+    HRESULT _stdcall InternalizedOscillator([in] long Period, [out, retval] VARIANT * Return );
+    [
+    id(0x00000044)
+    ]
+    HRESULT _stdcall InternalizedRSI([in] long Period, [out, retval] VARIANT * Return );
+    [
+    id(0x00000045)
+    ]
+    HRESULT _stdcall GetOptionChain([in] long Bar, [in] long dydm, [out] VARIANT * StrikeList, [out] VARIANT * OpenList, [out] VARIANT * HighList, [out] VARIANT * LowList, [out] VARIANT * CloseList, [out] VARIANT * ClosingBidList, [out] VARIANT * ClosingAskList, [out] VARIANT * VolumeList, [out] VARIANT * OpenInterestList );
+    [
+    id(0x00000046)
+    ]
+    HRESULT _stdcall GetOptionChain_NumStrikes([in] long Bar, [in] long dydm, [out, retval] long * NumStrikes );
+    [
+    id(0x00000047)
+    ]
+    HRESULT _stdcall GetOptionChain_StrikeInPoints([in] long Bar, [in] long dydm, [in] long index, [out, retval] long * strike );
+    [
+    id(0x00000048)
+    ]
+    HRESULT _stdcall GetOptionChain_Open([in] long Bar, [in] long dydm, [in] long index, [out, retval] double * open );
+    [
+    id(0x00000049)
+    ]
+    HRESULT _stdcall GetOptionChain_High([in] long Bar, [in] long dydm, [in] long index, [out, retval] double * high );
+    [
+    id(0x0000004A)
+    ]
+    HRESULT _stdcall GetOptionChain_Low([in] long Bar, [in] long dydm, [in] long index, [out, retval] double * low );
+    [
+    id(0x0000004B)
+    ]
+    HRESULT _stdcall GetOptionChain_Close([in] long Bar, [in] long dydm, [in] long index, [out, retval] double * close );
+    [
+    id(0x0000004C)
+    ]
+    HRESULT _stdcall GetOptionChain_ClosingBid([in] long Bar, [in] long dydm, [in] long index, [out, retval] double * ClosingBid );
+    [
+    id(0x0000004D)
+    ]
+    HRESULT _stdcall GetOptionChain_ClosingAsk([in] long Bar, [in] long dydm, [in] long index, [out, retval] double * ClosingAsk );
+    [
+    id(0x0000004E)
+    ]
+    HRESULT _stdcall GetOptionChain_Volume([in] long Bar, [in] long dydm, [in] long index, [out, retval] long * vol );
+    [
+    id(0x0000004F)
+    ]
+    HRESULT _stdcall GetOptionChain_OI([in] long Bar, [in] long dydm, [in] long index, [out, retval] long * oi );
+    [
+    id(0x00000050)
+    ]
+    HRESULT _stdcall GetCurrentContract([in] short Bar, [out, retval] long * Value );
+    [
+    id(0x00000051)
+    ]
+    HRESULT _stdcall GetOptionChain_StrikeInDecimal([in] long Bar, [in] long dydm, [in] long index, [out, retval] double * strike );
+    [
+    propget, 
+    id(0x00000052)
+    ]
+    HRESULT _stdcall PlotAsOHLC([out, retval] short * Value );
+    [
+    propput, 
+    id(0x00000052)
+    ]
+    HRESULT _stdcall PlotAsOHLC([in] short Value );
+    [
+    propget, 
+    id(0x00000053)
+    ]
+    HRESULT _stdcall WholePointValue([out, retval] double * Value );
+    [
+    id(0x00000054)
+    ]
+    HRESULT _stdcall GetIntData([in] short Field, [in] short Bar, [out, retval] long * Value );
+    [
+    propget, 
+    id(0x00000055)
+    ]
+    HRESULT _stdcall EPSGrowth5Year([out, retval] double * Value );
+    [
+    id(0x00000056)
+    ]
+    HRESULT _stdcall InternalizedMesaSH([in] double CycPart, [out] VARIANT * BuySig, [out] VARIANT * SellSig );
+    [
+    id(0x00000057)
+    ]
+    HRESULT _stdcall InternalizedMesaBond([out] VARIANT * BuySig, [out] VARIANT * SellSig );
+    [
+    id(0x00000058)
+    ]
+    HRESULT _stdcall InternalizedMesaIndex([in] long Len1, [in] long Len2, [in] long Len3, [in] long Len4, [in] float Len5, [in] long MM_Period, [in] float MM_Scale, [in] VARIANT * TargetPosition, [in] VARIANT * BuySig, [in] VARIANT * SellSig );
+  };
+
+  [
+    uuid(A7120BAF-D87E-4949-93A0-53BB63F4D528), 
+    version(1.0), 
+    helpstring("UAScriptCallBackObject Object")
+  ]
+  coclass UAScriptCallBackObject
+  {
+    [default] interface IUAScriptCallBackObject;
+  };
+
+}; 

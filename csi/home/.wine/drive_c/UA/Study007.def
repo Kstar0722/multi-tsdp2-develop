@@ -1,0 +1,7 @@
+[study]
+DESCRIPTION=Spread
+EXTENSION=spd
+INPUT=close,close2 
+OUTPUTS=2
+MIN=1
+MAX=1

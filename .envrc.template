@@ -1,0 +1,6 @@
+export POSTGRES_DB=tsdp
+export POSTGRES_PASSWORD=Temp1234
+export DEBUG=on
+export SECRET_KEY="vqy*jdm(t)*uid+(b=rgfb*c7+-okkj#lf_9u_3m*ou&t-(y#h"
+export DATABASE_URL=postgres://postgres:Temp1234@localhost:5432/tsdp
+export CELERY_BROKER_URL=redis://redis:6379/0

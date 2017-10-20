@@ -1,0 +1,991 @@
+use Win32::OLE;
+use Win32::OLE::Variant;
+use UAGetFacts;
+sub GetFact {
+  my($FieldNum) = @_;
+  UAGetFacts::UAGetFact($UA_Csinum,$UA_IsStock,$FieldNum);
+}
+
+if(0) {
+  #use strict 'vars';
+  #my($UA_OptimizationCount, @UAOptimizationDimensions, $UA_OptObjectiveDirection, $UA_OptObjectiveField, $UA_SmartOptimize, $UA_IsChartStudy);
+  #my(@UAOptimizationMinValues, @UAOptimizationStepValues, $UA_OptBalancing,);
+  my($UAMostRecentDataEarlyInArray);
+  my($UA_Csinum, $UA_IsStock, $UASharePriceScale, $UA_PlotAsOHLC, $UA_Cvf, $TradeEntryPrice, $Position);
+  my(@Date, @Dydm , @Open, @High, @Low, @Close, @Vol, @Oi, @TVol, @TOi, @Cash);
+  my(       @Dydm2, @Open2, @High2, @Low2, @Close2, @Vol2, @Oi2, @TVol2, @TOi2, @Cash2);
+  my($UAIndicatorTitle, @UAIndicatorLabels, @UAIndicatorDisplayFormat);
+  #my($UA_OptimizationRun);
+  my(@UAOpenPositionList);
+  my(@UAGetOptionChain_StrikeInPointsList,@UAGetOptionChain_StrikeInDecimalList,
+   @UAGetOptionChain_OpenList,   @UAGetOptionChain_HighList,   @UAGetOptionChain_LowList,
+   @UAGetOptionChain_CloseList,   @UAGetOptionChain_ClosingBidList,   @UAGetOptionChain_ClosingAskList,
+   @UAGetOptionChain_VolumeList,  @UAGetOptionChain_OpenInterestList);
+}
+
+my(%UA_NotSkipList, @UA_HasSeries, @UA_HasCash);
+my($UA_RunningFirstStudy, @UATradeResultList, $UA_TimeIndex);
+my($UA_StudyReturnCount, $UaLastStockCsinum);
+my(@UATradeJournal, $UA_NeedsOptimizationRunPrint, @UAOrders, @UAOrderFilled, @UAOrderInForce);
+my(@UA_True_Date, @UA_True_Dydm ,@UA_True_Open , @UA_True_High , @UA_True_Low , @UA_True_Close , @UA_True_Vol , @UA_True_Oi , @UA_True_TVol , @UA_True_TOi , @UA_True_Cash );
+my(               @UA_True_Dydm2,@UA_True_Open2, @UA_True_High2, @UA_True_Low2, @UA_True_Close2, @UA_True_Vol2, @UA_True_Oi2, @UA_True_TVol2, @UA_True_TOi2, @UA_True_Cash2);
+my($UA_OpenEquity, $UA_ClosedEquity, $UA_ReferencePrice);
+sub UA_HasSecondSeries { ($#UA_HasSeries>=1)&&($UA_HasSeries[1]); } #helper
+
+
+my($UAApiConnection);
+
+sub UA_GetOptionChain
+{
+  my($Bar,$dydm) = @_;
+  my($date) = $Date[$Bar];
+  $#UAGetOptionChain_StrikeInPointsList
+    = $#UAGetOptionChain_StrikeInDecimalList
+    = $#UAGetOptionChain_OpenList
+    = $#UAGetOptionChain_HighList
+    = $#UAGetOptionChain_LowList
+    = $#UAGetOptionChain_CloseList
+    = $#UAGetOptionChain_ClosingBidList
+    = $#UAGetOptionChain_ClosingAskList
+    = $#UAGetOptionChain_VolumeList
+    = $#UAGetOptionChain_OpenInterestList = -1;
+  if(!defined($UAApiConnection)) {
+    Win32::OLE::CreateObject("UA.Api2", $UAApiConnection) || die "unable to create UA.Api2 object: $!";
+  }
+  $UAApiConnection->{RoundToTick} = 1;
+  my @arrays = map {Variant(VT_BYREF | VT_VARIANT)} (1 .. 2);
+  my($numrec) = $UAApiConnection->RetrieveSnapShot($UA_Csinum, $UA_IsStock, 1, $dydm, 0, $date, $date, @arrays);
+  if((!defined($numrec))||($numrec<=0)) { return 0; }
+  $#UAGetOptionChain_StrikeInPointsList
+    = $#UAGetOptionChain_StrikeInDecimalList
+    = $#UAGetOptionChain_OpenList
+    = $#UAGetOptionChain_HighList
+    = $#UAGetOptionChain_LowList
+    = $#UAGetOptionChain_CloseList
+    = $#UAGetOptionChain_ClosingBidList
+    = $#UAGetOptionChain_ClosingAskList
+    = $#UAGetOptionChain_VolumeList
+    = $#UAGetOptionChain_OpenInterestList = $numrec-1;
+  #my($numkeptrec) = 0;
+  for(my $i=0;$i<$numrec;$i++) {
+    #print(join("\n", map {$_->Get(0)} (@arrays)), "\n");
+    #++$numkeptrec;
+    $UAGetOptionChain_StrikeInPointsList[$i] = $arrays[0]->Get(2,$i);
+    $UAGetOptionChain_StrikeInDecimalList[$i] = $arrays[1]->Get(0,$i);
+    $UAGetOptionChain_OpenList[$i]         = $arrays[1]->Get(1,$i);
+    $UAGetOptionChain_HighList[$i]         = $arrays[1]->Get(2,$i);
+    $UAGetOptionChain_LowList[$i]          = $arrays[1]->Get(3,$i);
+    $UAGetOptionChain_CloseList[$i]        = $arrays[1]->Get(4,$i);
+    $UAGetOptionChain_ClosingBidList[$i]   = $arrays[1]->Get(5,$i);
+    $UAGetOptionChain_ClosingAskList[$i]   = $arrays[1]->Get(6,$i);
+    $UAGetOptionChain_VolumeList[$i]       = $arrays[0]->Get(3,$i);
+    $UAGetOptionChain_OpenInterestList[$i] = $arrays[0]->Get(4,$i);
+    #print $arrays[0]->Get($iday).' '.$arrays[13]->Get($iday)."\n";
+  }
+  #return $numkeptrec;
+  return $numrec;
+}
+
+sub UA_WriteHeaderOfTrailer
+{
+  if((!$UA_IsChartStudy)&&($UA_OptimizationCount<=0)) {
+      print UA_OUTPUT_FH "Version 101\n";
+      if($UAIndicatorTitle) {
+        print UA_OUTPUT_FH 'Title '.$UAIndicatorTitle."\n";
+      }
+      if(@UAIndicatorLabels) {
+        print UA_OUTPUT_FH 'NumIndicatorColumns '.($#UAIndicatorLabels+1)."\n";
+        my($i);
+        for($i=0;$i<=$#UAIndicatorLabels;$i++) {
+          print UA_OUTPUT_FH 'IndicatorLabels '.$i.' '.$UAIndicatorLabels[$i]."\n";
+        }
+      }
+      if(@UAIndicatorDisplayFormat) {
+        my($i);
+        for($i=0;$i<=$#UAIndicatorDisplayFormat;$i++) {
+          print UA_OUTPUT_FH 'IndicatorDisplayFormat '.$i.' '.$UAIndicatorDisplayFormat[$i]."\n";
+        }
+      }
+      print UA_OUTPUT_FH "\n";
+  } else {
+      print UA_OUTPUT_FH "Version 102\n";
+      if(defined($UAIndicatorTitle)) {
+        print UA_OUTPUT_FH "Title $UAIndicatorTitle\n";
+      }
+      if($#UAIndicatorLabels>=0) {
+        print UA_OUTPUT_FH "OutputTitles ".join(',',@UAIndicatorLabels)."\n"
+      }
+      $UASharePriceScale = ($UASharePriceScale?1:0);
+      print UA_OUTPUT_FH "SharePriceScale $UASharePriceScale\n";
+      $UA_PlotAsOHLC = ($UA_PlotAsOHLC?1:0);
+      print UA_OUTPUT_FH "PlotAsOHLC $UA_PlotAsOHLC\n";
+  }
+}
+sub UA_RunSeriesAtTime
+{
+  if((!$UA_IsChartStudy)&&($UA_OptimizationCount<=0)) {
+    my(@s) = &study();
+    if($UA_RunningFirstStudy) { UA_WriteHeaderOfTrailer(); }
+    print UA_OUTPUT_FH join(',',($UA_IsStock?-1:1)*$UA_Csinum,@s)."\n";
+  } else {
+    &UA_ExecuteOrders(1);
+    if($#UAOrders+1>0) {
+      print UA_OUTPUT_FH "Orders ".($#UAOrders+1)."\n".join("\n",@UAOrders)."\n";
+      print UA_OUTPUT_FH "OrdersFilled ".($#UAOrderFilled+1)."\n".join("\n",@UAOrderFilled)."\n";
+      @UAOrders = ();
+      @UAOrderFilled = ();
+      @UAOrderInForce = ();
+    }
+    #if(($UA_TimeIndex==0)||($UAMostRecentDataEarlyInArray)) {
+    #  $UAMostRecentDataEarlyInArray = 0;
+    #  SetUAMostRecentDataEarlyInArray(1);
+    #}
+    my(@rc) = &study();
+    if($#rc<0) { return; }
+    if($UA_RunningFirstStudy) { UA_WriteHeaderOfTrailer(); }
+    if($UA_RunningFirstStudy) {
+      $UA_StudyReturnCount = $#rc+1;
+      print UA_OUTPUT_FH "\n";
+    } else {
+      die "inconsistent number of returns" unless $#rc+1 == $UA_StudyReturnCount;
+    }
+    if($UA_NeedsOptimizationRunPrint) {
+      print UA_OUTPUT_FH "OptimizationRun $UA_OptimizationRun $UA_Csinum $UA_IsStock\n";
+      $UA_NeedsOptimizationRunPrint = 0;
+    }
+    print UA_OUTPUT_FH 'StudyValues '.join(',',$UA_True_Date[$UA_TimeIndex],@rc)."\n";
+    &UA_ExecuteOrders(0);
+    print UA_OUTPUT_FH "DOHLCvi ".join(',',$UA_True_Date[$#Date],$UA_True_Open[$#Date],$UA_True_High[$#Date],$UA_True_Low[$#Date],$UA_True_Close[$#Date],$UA_True_Vol[$#Date],$UA_True_Oi[$#Date])."\n";
+    &UA_PrintSystemStats(0);
+    @UATradeJournal = ();
+    if($UA_TimeIndex==$#UA_True_Date) {
+      if($#UAOrders+1>0) {
+        print UA_OUTPUT_FH "Orders ".($#UAOrders+1)."\n".join("\n",@UAOrders)."\n";
+        print UA_OUTPUT_FH "OrdersFilled ".($#UAOrderFilled+1)."\n".join("\n",@UAOrderFilled)."\n";
+        @UAOrders = ();
+        @UAOrderFilled = ();
+        @UAOrderInForce = ();
+      }
+    }
+  }
+  $UA_RunningFirstStudy=0;
+}
+sub UA_StudyPriceSeries {
+  my(@UA_ReturnValues);
+#  if(!$UA_IsChartStudy) {
+#    if(!defined($UA_NotSkipList{int(($UA_IsStock?-1:1)*$UA_Csinum)}))
+#      { return; }
+#  }
+  $Position = 0; $TradeEntryPrice = ''; @UAOrders = (); @UAOrderInForce = (); @UAOrderFilled = (); @UATradeJournal = (); @UATradeResultList = ();
+  $UA_NeedsOptimizationRunPrint = 1;
+  #print $UA_Csinum."\n";
+  if((!$UA_IsChartStudy)&&($UA_OptimizationCount<=0)) {
+    my($t,$i,$j,@s);
+    $UAMostRecentDataEarlyInArray = 0;
+    SetUAMostRecentDataEarlyInArray(1);
+    UA_RunSeriesAtTime();
+  } else {
+    @UA_True_Date  = @Date  ;
+    @UA_True_Dydm  = @Dydm  ;
+    @UA_True_Open  = @Open  ;
+    @UA_True_High  = @High  ;
+    @UA_True_Low   = @Low   ;
+    @UA_True_Close = @Close ;
+    @UA_True_Cash  = @Cash  ;
+    @UA_True_Vol   = @Vol   ;
+    @UA_True_Oi    = @Oi    ;
+    @UA_True_TVol  = @TVol  ;
+    @UA_True_TOi   = @TOi   ;
+    if(($#UA_HasSeries>=1)&&($UA_HasSeries[1])) {
+      @UA_True_Dydm2 = @Dydm2  ;
+      @UA_True_Open2 = @Open2 ;
+      @UA_True_High2 = @High2 ;
+      @UA_True_Low2  = @Low2  ;
+      @UA_True_Close2= @Close2;
+      @UA_True_Cash2 = @Cash2 ;
+      @UA_True_Vol2  = @Vol2  ;
+      @UA_True_Oi2   = @Oi2   ;
+      @UA_True_TVol2 = @TVol2 ;
+      @UA_True_TOi2  = @TOi2  ;
+    }
+    my($LastPrintYear) = 0;
+    $#Date = $#Dydm = $#Open = $#High = $#Low = $#Close = $#Vol = $#Oi = $#TVol = $#TOi = -1;
+    $#Dydm2 = $#Open2 = $#High2= $#Low2 = $#Close2 = $#Vol2 = $#Oi2 = $#TVol2 = $#TOi2 = -1;
+    $UAMostRecentDataEarlyInArray = 1;
+    for($UA_TimeIndex=0;$UA_TimeIndex<=$#UA_True_Date;$UA_TimeIndex++) {
+      if(($UA_OptimizationCount<=0)&&($LastPrintYear!=int($UA_True_Date[$UA_TimeIndex]/10000))) {
+        $LastPrintYear=int($UA_True_Date[$UA_TimeIndex]/10000);
+        print "Year = $LastPrintYear\n";
+      }
+      my($NewIndex) =($UAMostRecentDataEarlyInArray?0:$#Date+1);
+      splice(@Date ,$NewIndex,0,$UA_True_Date [$UA_TimeIndex]);
+      splice(@Dydm ,$NewIndex,0,$UA_True_Dydm [$UA_TimeIndex]);
+      splice(@Open ,$NewIndex,0,$UA_True_Open [$UA_TimeIndex]);
+      splice(@High ,$NewIndex,0,$UA_True_High [$UA_TimeIndex]);
+      splice(@Low  ,$NewIndex,0,$UA_True_Low  [$UA_TimeIndex]);
+      splice(@Close,$NewIndex,0,$UA_True_Close[$UA_TimeIndex]);
+      splice(@Cash ,$NewIndex,0,$UA_True_Cash [$UA_TimeIndex]);
+      splice(@Vol  ,$NewIndex,0,$UA_True_Vol  [$UA_TimeIndex]);
+      splice(@Oi   ,$NewIndex,0,$UA_True_Oi   [$UA_TimeIndex]);
+      splice(@TVol ,$NewIndex,0,$UA_True_TVol [$UA_TimeIndex]);
+      splice(@TOi  ,$NewIndex,0,$UA_True_TOi  [$UA_TimeIndex]);
+      if(($#UA_HasSeries>=1)&&($UA_HasSeries[1])) {
+        splice(@Dydm2 ,$NewIndex,0,$UA_True_Dydm2 [$UA_TimeIndex]);
+        splice(@Open2 ,$NewIndex,0,$UA_True_Open2 [$UA_TimeIndex]);
+        splice(@High2 ,$NewIndex,0,$UA_True_High2 [$UA_TimeIndex]);
+        splice(@Low2  ,$NewIndex,0,$UA_True_Low2  [$UA_TimeIndex]);
+        splice(@Close2,$NewIndex,0,$UA_True_Close2[$UA_TimeIndex]);
+        splice(@Cash2 ,$NewIndex,0,$UA_True_Cash2 [$UA_TimeIndex]);
+        splice(@Vol2  ,$NewIndex,0,$UA_True_Vol2  [$UA_TimeIndex]);
+        splice(@Oi2   ,$NewIndex,0,$UA_True_Oi2   [$UA_TimeIndex]);
+        splice(@TVol2 ,$NewIndex,0,$UA_True_TVol2 [$UA_TimeIndex]);
+        splice(@TOi2  ,$NewIndex,0,$UA_True_TOi2  [$UA_TimeIndex]);
+      }
+      UA_RunSeriesAtTime();
+    }
+    if($Position!=0) {
+      push(@UATradeResultList,$Position*($UA_True_Close[$#UA_True_Close]-$TradeEntryPrice));
+    }
+  }
+}
+sub UA_OpenFile
+{
+  if($UA_IsChartStudy) {
+    open(UA_INPUT_FH, '< indata.txt') || die "unable to open stock scan file";
+    open(UA_OUTPUT_FH, '> outdata.txt') || die "unable to create out file";
+  } elsif($UA_OptimizationCount>0) {
+    open(UA_INPUT_FH, '< archives\stkscn.bin') || die "unable to open stock scan file";
+    binmode(UA_INPUT_FH);
+    open(UA_OUTPUT_FH, '> outdata.txt') || die "unable to create out file";
+  } else {
+    open(UA_INPUT_FH, '< archives\stkscn.bin') || die "unable to open stock scan file";
+    open(UA_OUTPUT_FH, '> perl.out') || die "unable to create out file";
+    binmode(UA_INPUT_FH);
+  }
+}
+sub UA_CloseFile()
+{
+  close(UA_INPUT_FH);
+  close(UA_OUTPUT_FH);
+  open(UA_DONE_FH, '> perldone.txt') || die "unable to create done file";
+  print UA_DONE_FH "0\n";
+  close(UA_DONE_FH);
+}
+my($UA_ReadBuffer,@UA_ReadLine,$UA_Read_Csinum,$UA_ReadDate,$UA_Read_IsStock,$UA_ReadCvf,$UA_ReadDydm,$UA_ReadOpen,$UA_ReadHigh,$UA_ReadLow,$UA_ReadClose,$UA_ReadVolume,$UA_ReadOpenInterest,$UA_ReadTotalVolume,$UA_ReadTotalOpenInterest);
+sub UA_ReadHeader
+{
+  $UA_Csinum = -1; $UA_IsStock=3;
+  if($UA_IsChartStudy) {
+    @UA_HasSeries = (); @UA_HasCash = ();
+    { # read header of indata.txt
+      $_ = <UA_INPUT_FH>;
+      die "missing version line" unless $_ =~ m/^(\d+) Version/;
+      my($UA_InputFileVersion) = int($1);
+      die "unknown input file version $1 \n" unless ($UA_InputFileVersion == 101);
+      my($study);
+      for(;length($_);) {
+        $_ = <UA_INPUT_FH>;
+        chop;
+        if($_ =~ m/^(\d+) (\d+) HasSeries$/) {
+          my($has);
+          ($has,$study) = (int($1),int($2));
+          if($#UA_HasSeries<$study) {
+            $#UA_HasSeries = $study;
+          }
+          $UA_HasSeries[$study]=$has;
+        } elsif($_ =~ m/^(\d+) (\d+) csinum IsStock$/) {
+          $UA_Csinum = int($1); $UA_IsStock = int($2);
+        } elsif($_ =~ m/^(\d+) HasCash$/) {
+          if($#UA_HasCash<$study) {
+            $#UA_HasCash = $study;
+          }
+          $UA_HasCash[$study]=int($1);
+        }
+      }
+    }
+  } else {
+    {
+      die "No header record in Stock Scan file " unless (read UA_INPUT_FH, $UA_ReadBuffer, 48);
+      @UA_ReadLine = unpack("lLccCCffffLLLLL",$UA_ReadBuffer);
+      ($UA_Read_Csinum, $UA_ReadDate) = splice(@UA_ReadLine,0,2);
+      die "Invalid Stock Scan file version number " unless ($UA_Read_Csinum == 102);
+      die "Invalid Stock Scan file record size " unless ($UA_ReadDate == 48);
+      undef($UA_Read_Csinum);
+      undef($UA_ReadDate);
+    }
+  }
+}
+sub UA_ReadSeries
+{
+  $UAMostRecentDataEarlyInArray=0;
+  @Date = @Dydm = @Open = @High = @Low = @Close = @Cash = @Vol = @Oi = @TVol = @TOi = ();
+  if($UA_IsChartStudy) {
+    @Dydm2 = @Open2 = @High2 = @Low2 = @Close2 = @Cash2 = @Vol2 = @Oi2 = @TVol2 = @TOi2 = ();
+    while(<UA_INPUT_FH>) {
+      chop;
+      my(@list) = split(/,/);
+      if($#list+1<1) { last; }
+      my($date) = int(splice(@list,0,1));
+      push(@Date,$date);
+      my($iseries);
+      for($iseries=0;$iseries<=$#UA_HasSeries;$iseries++) {
+        if(!$UA_HasSeries[$iseries]) { next; }
+        my($dydm,$o,$h,$l,$c,$cash) = splice(@list,0,($UA_HasCash[$iseries]?6:5));
+        my($vol,$oi,$tvol,$toi) = splice(@list,0,4);
+        #print "ohlc = $o:$h:$l:$c\n";
+        $o = $o + 0.0;
+        $h = $h + 0.0;
+        $l = $l + 0.0;
+        $c = $c + 0.0;
+        if(defined($cash)&&length($cash)) { $cash = $cash + 0.0; } #float($cash); }
+        $vol = int($vol);
+        if(defined($oi)&&length($oi)) { $oi = int($oi); }
+        $tvol = int($tvol);
+        if(defined($toi)&&length($toi)) { $toi = int($toi); }
+        if($iseries==0) {
+          push(@Dydm  ,$dydm);
+          push(@Open  ,$o);
+          push(@High  ,$h);
+          push(@Low   ,$l);
+          push(@Close ,$c);
+          push(@Cash  ,$cash);
+          push(@Vol   ,$vol);
+          push(@Oi    ,$oi);
+          push(@TVol  ,$tvol);
+          push(@TOi   ,$toi);
+        } else {
+          push(@Dydm2 ,$dydm);
+          push(@Open2 ,$o);
+          push(@High2 ,$h);
+          push(@Low2  ,$l);
+          push(@Close2,$c);
+          push(@Cash2 ,$cash);
+          push(@Vol2  ,$vol);
+          push(@Oi2   ,$oi);
+          push(@TVol2 ,$tvol);
+          push(@TOi2  ,$toi);
+        }
+      }
+    }
+    return $#Date>=0;
+  } else {
+    for(;;) {
+      if(defined($UA_Read_Csinum)) {
+        $UA_Csinum = $UA_Read_Csinum; $UA_IsStock = $UA_Read_IsStock;
+        $UA_Cvf = $UA_ReadCvf;
+        @Date = @Dydm = @Open = @High = @Low = @Close = @Vol = @Oi = @TVol = @TOi = ();
+        push(@Date ,$UA_ReadDate);
+        push(@Dydm ,$UA_ReadDydm);
+        push(@Open ,$UA_ReadOpen);
+        push(@High ,$UA_ReadHigh);
+        push(@Low  ,$UA_ReadLow);
+        push(@Close,$UA_ReadClose);
+        push(@Vol  ,$UA_ReadVolume);
+        push(@Oi   ,$UA_ReadOpenInterest);
+        push(@TVol ,$UA_ReadTotalVolume);
+        push(@TOi  ,$UA_ReadTotalOpenInterest);
+      } else {
+        undef($UA_Csinum);
+      }
+
+      while(read UA_INPUT_FH, $UA_ReadBuffer, 48) {
+        @UA_ReadLine = unpack("lLccCCffffLLLLL",$UA_ReadBuffer);
+        ($UA_Read_Csinum, $UA_ReadDate, $UA_ReadCvf, $UA_Read_IsStock) = splice(@UA_ReadLine,0,4);
+        if($UA_Read_Csinum==0) { next; }
+        if(!defined($UA_Csinum)) {
+          $UA_Csinum = $UA_Read_Csinum; $UA_IsStock = $UA_Read_IsStock;
+          $UA_Cvf = $UA_ReadCvf;
+          @Date = @Dydm = @Open = @High = @Low = @Close = @Vol = @Oi = @TVol = @TOi = ();
+        }
+        splice(@UA_ReadLine,0,2); # discard
+        ($UA_ReadOpen,$UA_ReadHigh,$UA_ReadLow,$UA_ReadClose,$UA_ReadVolume,$UA_ReadOpenInterest,$UA_ReadDydm,$UA_ReadTotalVolume,$UA_ReadTotalOpenInterest) = splice(@UA_ReadLine,0,9);
+        #print join(',',$UA_Read_Csinum,$UA_Read_IsStock,$UA_ReadDate)."\n";
+        if(($UA_Csinum>0)&&(((!$UA_Read_IsStock) != (!$UA_IsStock))||($UA_Csinum != $UA_Read_Csinum))) {
+          if(!defined($UA_NotSkipList{int(($UA_IsStock?-1:1)*$UA_Csinum)})) {
+            undef($UA_Csinum);
+            next;
+          }
+          return 1;
+        }
+        push(@Date ,$UA_ReadDate);
+        push(@Dydm ,$UA_ReadDydm);
+        push(@Open ,$UA_ReadOpen);
+        push(@High ,$UA_ReadHigh);
+        push(@Low  ,$UA_ReadLow);
+        push(@Close,$UA_ReadClose);
+        push(@Vol  ,$UA_ReadVolume);
+        push(@Oi   ,$UA_ReadOpenInterest);
+        push(@TVol ,$UA_ReadTotalVolume);
+        push(@TOi  ,$UA_ReadTotalOpenInterest);
+      }
+      undef($UA_Read_Csinum);
+      if(!defined($UA_Csinum)) { last; }
+      if(!defined($UA_NotSkipList{int(($UA_IsStock?-1:1)*$UA_Csinum)})) {
+        undef($UA_Csinum);
+        next;
+      }
+      return defined($UA_Csinum);
+    }
+  }
+}
+sub OptEncode
+{
+  my(@Pos) = @_;
+  my($code) = 0;
+  my($i);
+  for($i=$#UAOptimizationDimensions;$i>=0;$i--) {
+    $code = $code*$UAOptimizationDimensions[$i];
+    $code += $Pos[$i];
+  }
+  $code;
+}
+sub OptDecode
+{
+  my($code) = @_;
+  my(@Pos,$div,$rem,$i);
+  $#Pos = $#UAOptimizationDimensions;
+  for($i=0;$i<=$#UAOptimizationDimensions;$i++) {
+    $div = int($code/$UAOptimizationDimensions[$i]);
+    $rem = $code - $UAOptimizationDimensions[$i]*$div;
+    $Pos[$i] = $rem;
+    $code = $div;
+  }
+  @Pos;
+}
+sub OptParam
+{
+  my(@Pos) = @_;
+  my(@Param, $i);
+  $#Param = $#Pos;
+  for($i=0;$i<=$#UAOptimizationDimensions;$i++) {
+    $Param[$i] = $UAOptimizationMinValues[$i]+$Pos[$i]*$UAOptimizationStepValues[$i];
+  }
+  @Param;
+}
+sub OptResult
+{
+  my(@TradeList) = @_;
+  if($#TradeList+1==0) {
+    return -1e+6;
+  }
+  my($total)=0;
+  my($i);
+  for($i=$#TradeList;$i>=0;$i--) {
+    $total += $TradeList[$i];
+  }
+  if($UA_OptObjectiveField == 0) { # TotalNetProfit_Statistic
+    return $total;
+  } elsif($UA_OptObjectiveField == 12) { # AverageTrade_Statistic
+    return $total/($#TradeList+1);
+  } else {
+    die "unknown optimization objective field";
+  }
+}
+sub UA_StudyOuterLoop {
+  # load perlskip.txt
+  $UASharePriceScale=0;
+  $UA_PlotAsOHLC = 0;
+  if(!$UA_IsChartStudy) {
+    %UA_NotSkipList = ();
+    open(UA_INPUT_FH, '< perlskip.txt') || die "unable to open perlskip.txt";
+    while(<UA_INPUT_FH>) {
+      chop($_);
+      $UA_NotSkipList{int($_)} = 1;
+    }
+    close(UA_INPUT_FH);
+  }
+
+  UA_OpenFile();
+  $UA_RunningFirstStudy=1;
+
+  my($UAOptimizationLoopCount) = max($UA_OptimizationCount,1);
+  if($UA_SmartOptimize == 0) {
+    my($BestResult, $BestCode);
+    for($UA_OptimizationRun=0;$UA_OptimizationRun<$UAOptimizationLoopCount;$UA_OptimizationRun++) {
+      seek UA_INPUT_FH, 0, 0;
+      UA_ReadHeader();
+      my(@TradeList);
+      while(UA_ReadSeries()) {
+        if($UA_OptimizationCount>0) {
+          print "Run = ".($UA_OptimizationRun+1)." of $UA_OptimizationCount\t";
+        }
+        print "Csinum=${UA_Csinum}(${UA_IsStock})\n";
+        &ResetWithEachSeries();
+        &UA_StudyPriceSeries();
+        push(@TradeList,@UATradeResultList);
+      }
+      if(($UA_OptObjectiveField == 0)||($UA_OptObjectiveField == 12)) {
+        my($ThisResult) = OptResult(@TradeList);
+        if((!defined($BestResult))||($UA_OptObjectiveDirection*$ThisResult>$UA_OptObjectiveDirection*$BestResult)) {
+          $BestResult = $ThisResult;
+          $BestCode = $UA_OptimizationRun;
+        }
+        if(($UA_OptimizationCount>0)&&($UA_SmartOptimize != 0)) {
+          print "Run = ".$UA_OptimizationRun." of $UA_OptimizationCount has value $ThisResult vs best $BestResult\n";
+        }
+      }
+    }
+  } elsif($UA_SmartOptimize == 1) {
+    my($BestResult, $BestCode); {
+      my($i,$j,@Pos); $#Pos = $#UAOptimizationDimensions;
+      for($i=0;$i<=$#UAOptimizationDimensions;$i++) {
+        $Pos[$i] = int($UAOptimizationDimensions[$i]/2);
+      }
+      $UA_OptimizationRun = OptEncode(@Pos);
+    }
+    my($LoopCount, @ResultList);
+    $#ResultList = $UAOptimizationLoopCount-1;
+    for($LoopCount=0;$LoopCount<$UAOptimizationLoopCount;$LoopCount++) {
+      seek UA_INPUT_FH, 0, 0;
+      UA_ReadHeader();
+      my(@TradeList);
+      while(UA_ReadSeries()) {
+        if($UA_OptimizationCount>0) {
+          print "Run = ".$UA_OptimizationRun." of $UA_OptimizationCount\t";
+          #print "Run = ".($UA_OptimizationRun+1)." of $UA_OptimizationCount\t";
+        }
+        print "Csinum=$UA_Csinum($UA_IsStock)\n";
+        &ResetWithEachSeries();
+        &UA_StudyPriceSeries();
+        push(@TradeList,@UATradeResultList);
+      }
+      my($ThisResult) = OptResult(@TradeList);
+      $ResultList[$UA_OptimizationRun] = $ThisResult;
+      if((!defined($BestResult))||($UA_OptObjectiveDirection*$ThisResult>$UA_OptObjectiveDirection*$BestResult)) {
+        $BestResult = $ThisResult;
+        $BestCode = $UA_OptimizationRun;
+      }
+      if(($UA_OptimizationCount>0)&&($UA_SmartOptimize != 0)) {
+        print "Run = ".$UA_OptimizationRun." of $UA_OptimizationCount has value $ThisResult vs best $BestResult\n";
+      }
+      {
+        my(@basepos) = OptDecode($BestCode);
+        my(@pos); $#pos = $#basepos;
+        my($idim,$listsize,$i,@delta,$itemp,$jj);
+        $listsize = 1; $#delta = $#pos;
+        for($idim=$#pos;$idim>=0;$idim--) {
+          $listsize *= 3;
+        }
+        undef($UA_OptimizationRun);
+        for($i=$listsize-1;$i>=0;$i--) {
+          $itemp = $i;
+          my($invalid)=0;
+          for($idim=0;$idim<=$#pos;$idim++) {
+            $jj = int($itemp/3);
+            $delta[$idim] = ($itemp-3*$jj)-1;
+            $itemp = $jj;
+            $pos[$idim] = $basepos[$idim] + $delta[$idim];
+            if($pos[$idim]>=$UAOptimizationDimensions[$idim]) {
+              $invalid=1;
+              last;
+            }
+          }
+          next if($invalid);
+          $UA_OptimizationRun = OptEncode(@pos);
+          next if(defined($ResultList[$UA_OptimizationRun]));
+          last;
+        }
+        if($i<0) { $LoopCount=$UAOptimizationLoopCount; }
+      }
+    }
+  } else {
+    die "Unknown UA_SmartOptimize";
+  }
+  UA_CloseFile();
+  1;
+}
+sub PlaceOrder {
+  my($t);
+  $t = (++$#UAOrders);
+  $UAOrders[$t] = $_[0];
+  $#UAOrderInForce = $t;
+  $UAOrderInForce[$t] = 1;
+  $#UAOrderFilled = $t;
+  $UAOrderFilled[$t] = 0;
+  $t;
+}
+sub ParseOrder {
+  my($order) = @_;
+  my($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice,$ocoindex);
+  {
+    die 'unrecognized order :'.$order unless
+      ($order =~ m/^((buy|sell)\s*(\(\"[^\"]*\"\))?|(exit|exitlong|exitshort)\s*(\(\"[^\"]*\"\))?\s*(from (\(\"[^\"]*\"\)))?)\s*(|this bar|next bar|this day|next day)\s*(|1 share|\d+ shares|1 contract|\d+ contracts|\d+)\s*(|on close|on open|at market|at [-\d\.]+ stop|at [-\d\.]+ mit|at [-\d\.]+ market if touched|at [-\d\.]+ limit|at [\d\.]+ or better)(\s+OCO\s+(\d+))?\s*$/i);
+    $verb = uc((defined($2)&&length($2)?$2:'') . (defined($4)&&length($4)?$4:''));
+    $exitname = uc($5);
+    $entry = uc((defined($3)&&length($3)?$3:'') . (defined($7)&&length($7)?$7:''));
+    $whichbar = uc(defined($8)&&length($8)?$8:'next bar');
+    if($whichbar eq 'NEXT DAY') { $whichbar = 'NEXT BAR'; }
+    if($whichbar eq 'THIS DAY') { $whichbar = 'THIS BAR'; }
+    $quantity = uc(defined($9)&&length($9)?$9:($Position!=0?abs($Position):1));
+    $when = uc($10);
+    $ocoindex = int(defined($12)&&length($12)?$12:-1);
+    if($quantity =~ m/(\d+)\s*(|share|shares|contract|contracts)/) {
+      $quantity = int($1);
+    }
+    if($when =~ m/^(|on close|on open|at market)$/i) {
+      if($when eq '') { $when = 'AT MARKET'; }
+      if($when eq 'AT MARKET') { $when = 'ON OPEN'; }
+      $when =~ m/^(on (close)|on (open))$/i;
+      $whencmd = uc((defined($2)&&length($2)?$2:'') . (defined($3)&&length($3)?$3:''));
+      if((!$whichbar)&&($whencmd eq 'CLOSE')) { $whichbar = 'THIS BAR'; }
+      if(!$whichbar) { $whichbar = 'NEXT BAR'; }
+    } elsif($when =~ m/^(at ([-\d\.]+) (stop)|at ([-\d\.]+) (mit)|at ([-\d\.]+) (market if touched)|at ([-\d\.]+) (limit)|at ([-\d\.]+) (or better))$/i) {
+      $targetprice = (defined($2)&&length($2)?$2:'') . (defined($4)&&length($4)?$4:'') . (defined($6)&&length($6)?$6:'') . (defined($8)&&length($8)?$8:'') . (defined($10)&&length($10)?$10:'');
+      $whencmd = uc((defined($3)&&length($3)?$3:'') . (defined($5)&&length($5)?$5:'') . (defined($7)&&length($7)?$7:'') . (defined($9)&&length($9)?$9:'') . (defined($11)&&length($11)?$11:''));
+      if($whencmd eq 'MARKET IF TOUCHED') { $whencmd = 'MIT'; }
+      if($whencmd eq 'MIT') { $whencmd = 'STOP'; }
+      if($whencmd eq 'OR BETTER') { $whencmd = 'LIMIT'; }
+      $whichbar = 'NEXT BAR';
+    } else {
+      die "unknown when clause $when";
+    }
+  }
+  ($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice,$ocoindex);
+}
+sub UA_ExecuteOrders {
+  my($NextDay) = @_;
+  #if(!defined(@UAOrders)) { @UAOrders=(); }
+  #if(!defined(@UAOrderInForce)) { @UAOrderInForce=(); }
+  #if(!defined(@UAOrderFilled)) { @UAOrderFilled=(); }
+  if(!defined($Position)) { $Position=0; }
+  if(!defined($TradeEntryPrice)) { $TradeEntryPrice=''; }
+  if(!defined($UA_OpenEquity)) { $UA_OpenEquity=0; }
+  if(!defined($UA_ClosedEquity)) { $UA_ClosedEquity=0; }
+
+  if(!$NextDay) { # look for on close orders only
+    my($order,$iorder);
+    for($iorder=0;$iorder<=$#UAOrders;$iorder++) {
+      next if(!$UAOrderInForce[$iorder]);
+      $order = $UAOrders[$iorder];
+      my($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice,$ocoindex) = ParseOrder($order);
+      if(((!$NextDay) && ($whichbar eq 'NEXT BAR '))||
+         (( $NextDay) && ($whichbar eq 'THIS BAR '))) {
+        next;
+      }
+      if($whencmd ne 'CLOSE') { next; }
+      &UA_FillOrder($iorder,$verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice, $UA_True_Close[$#Date], $UA_True_Close[$#Date]);
+    }
+    return;
+  }
+
+  if($#UAOrders+1==0) { return; }
+
+  { # look for on open and at market orders only
+    my($order, $iorder);
+    for($iorder=0;$iorder<=$#UAOrders;$iorder++) {
+      next if(!$UAOrderInForce[$iorder]);
+      $order = $UAOrders[$iorder];
+      my($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice) = ParseOrder($order);
+      if(((!$NextDay) && ($whichbar eq 'NEXT BAR '))||
+         (( $NextDay) && ($whichbar eq 'THIS BAR '))) {
+        next;
+      }
+      if(($when ne 'ON OPEN')&&($when ne 'MARKET')) { next; }
+      &UA_FillOrder($iorder,$verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice, $UA_True_Open[$#Date], $UA_True_Open[$#Date] ); #$Open[$#Open], $Open[$#Open]);
+    }
+  }
+  { # handle remaining orders during the day
+    my($order, $StartPrice, $StopPrice, $iprice, $FilledSomebody, $iorder);
+    my($open, $high, $low, $close) =
+      ($UA_True_Open[$#Date], $UA_True_High[$#Date], $UA_True_Low[$#Date], $UA_True_Close[$#Date]);
+    for($iprice=0;$iprice<4;$iprice++) {
+      if($iprice==0) {
+        $StartPrice = $open;
+        if($close>$open) {
+          $StopPrice = $low;
+        } else {
+          $StopPrice = $high;
+        }
+      } elsif($iprice==1) {
+        $StartPrice = $StopPrice;
+        if($close>$open) {
+          $StopPrice = $high;
+        } else {
+          $StopPrice = $low;
+        }
+      } elsif($iprice==2) {
+        $StartPrice = $StopPrice;
+        $StopPrice = $close;
+      }
+      do {
+        my($FilledSomebody)=0;
+        for($iorder=0;$iorder<=$#UAOrders;$iorder++) { # &&(!$FilledSomebody)
+          next if(!$UAOrderInForce[$iorder]);
+          $order = $UAOrders[$iorder];
+          my($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice,$ocoindex) = ParseOrder($order);
+          if(((!$NextDay) && ($whichbar eq 'NEXT BAR '))||
+             (( $NextDay) && ($whichbar eq 'THIS BAR '))) {
+            next;
+          }
+          if(($when eq 'ON OPEN')||($when eq 'MARKET')) {
+            $UAOrderInForce[$iorder]=0;
+            next;
+          }
+          ($StartPrice,$FilledSomebody) = &UA_FillOrder($iorder,$verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice, $StartPrice, $StopPrice);
+        }
+      } while($FilledSomebody);
+    }
+  }
+}
+sub UA_FillOrder
+{
+  my(@t) = @_;
+  my(@ocoset, $jorder, $foundnew, $ioco, $joco, $ocofound);
+  my($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice,$ocoindex);
+  my($iorder) = splice(@t,0,1);
+  my($StartPrice,$FilledSomebody) = UA_CoreFillOrder(@t);
+  return($StartPrice,$FilledSomebody) if(!$FilledSomebody);
+  my($order) = $UAOrders[$iorder];
+  my($FilledOrderIndex) = $iorder;
+  push(@ocoset,$iorder);
+  for($foundnew=1;$foundnew;) {
+    $foundnew = 0;
+    for($ioco=$#ocoset;$ioco>=0;$ioco--) {
+      next if(!$UAOrderInForce[$ocoset[$ioco]]);
+      $order = $UAOrders[$ocoset[$ioco]];
+      ($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice,$ocoindex) = ParseOrder($order);
+      next if($ocoindex<0);
+      $ocofound=0;
+      for($joco=$#ocoset;$joco>=0;$joco--) {
+        if($ocoset[$joco] == $ocoindex) {
+          $ocofound=1;
+          last;
+        }
+      }
+      next if($ocofound);
+      push(@ocoset,$ocoindex);
+      $foundnew = 1;
+    }
+    for($jorder=0;$jorder<=$#UAOrders;$jorder++) {
+      next if(!$UAOrderInForce[$jorder]);
+      $order = $UAOrders[$jorder];
+
+      $ocofound=0;
+      for($joco=$#ocoset;$joco>=0;$joco--) {
+        if($ocoset[$joco] == $jorder) {
+          $ocofound=1;
+          last;
+        }
+      }
+      next if($ocofound);
+
+      ($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$targetprice,$ocoindex) = ParseOrder($order);
+      next if($ocoindex<0);
+
+      $ocofound=0;
+      for($joco=$#ocoset;$joco>=0;$joco--) {
+        if($ocoset[$joco] == $ocoindex) {
+          $ocofound=1;
+          last;
+        }
+      }
+      next if(!$ocofound);
+      push(@ocoset,$jorder);
+      $foundnew = 1;
+    }
+  }
+  for($ioco=$#ocoset;$ioco>=0;$ioco--) {
+    $UAOrderInForce[$ocoset[$ioco]] = 0;
+  }
+  $UAOrderFilled[$FilledOrderIndex] = 1;
+}
+sub UA_CoreFillOrder {
+  my($verb,$exitname,$entry,$whichbar,$quantity,$when,$whencmd,$target, $StartPrice, $StopPrice) = @_;
+  my($FilledSomebody)=0;
+  if($verb eq 'EXIT') {
+    $verb = 'EXITLONG' if($Position>0);
+    $verb = 'EXITSHORT' if($Position<0);
+  }
+  if(($verb eq 'EXIT' && ($Position==0))||($verb eq 'EXITLONG' && ($Position<=0))||($verb eq 'EXITSHORT' && ($Position>=0))) {
+    return($StartPrice,$FilledSomebody);
+  }
+  my($OrderQuantity); {
+    if($verb eq 'BUY') {
+      $OrderQuantity =  int($quantity?$quantity:1);
+    } elsif($verb eq 'SELL') {
+      $OrderQuantity = -int($quantity?$quantity:1);
+    } elsif($verb =~ m/^EXIT/) {
+      if(!$quantity) {
+        $OrderQuantity = -int($Position);
+      } else {
+        $OrderQuantity =  abs(int($quantity));
+        if($OrderQuantity > abs($Position)) { $OrderQuantity = abs($Position); }
+        if($Position>0) { $OrderQuantity = -$OrderQuantity; }
+      }
+    } else {
+      die 'unknown cmdverb';
+    }
+  }
+  my($FillPrice);
+  if(($whencmd eq 'CLOSE')||($whencmd eq 'OPEN')) {
+    $FillPrice = $StartPrice;
+  } elsif($whencmd eq 'LIMIT') {
+    if($OrderQuantity>0) {
+      if(min($StartPrice,$StopPrice)<$target) {
+        $FillPrice = min($StartPrice,$target);
+      }
+    } elsif($OrderQuantity<0) {
+      if(max($StartPrice,$StopPrice)>$target) {
+        $FillPrice = max($StartPrice,$target);
+      }
+    }
+  } elsif($whencmd eq 'STOP') {
+    if($OrderQuantity>0) {
+      if(max($StartPrice,$StopPrice)>=$target) {
+        $FillPrice = max($StartPrice,$target);
+      }
+    } elsif($OrderQuantity<0) {
+      if(min($StartPrice,$StopPrice)<=$target) {
+        $FillPrice = min($StartPrice,$target);
+      }
+    }
+  }
+  if(defined($FillPrice)) {
+    if($OrderQuantity * $Position >= 0) { #($verb eq 'BUY')||($verb eq 'SELL')) {
+      if((!$UA_IsChartStudy)&&($UA_OptimizationCount>0)) {
+        if($OrderQuantity>0) {
+          $OrderQuantity =  1;
+        } else {
+          $OrderQuantity = -1;
+        }
+        if($UA_OptBalancing == 0) {
+          $OrderQuantity *= int(1000.0/$FillPrice);
+        } elsif($UA_OptBalancing == 1) {
+          $OrderQuantity *= int(10000.0/$FillPrice);
+        } elsif($UA_OptBalancing == 2) {
+          $OrderQuantity *= int(100000.0/$FillPrice);
+        } elsif($UA_OptBalancing == 7) {
+          $OrderQuantity = &CustomOptimizationBalancing($OrderQuantity);
+        } else {
+          my($std) = &Volatility(10);
+          if($UA_OptBalancing == 3) {
+            $OrderQuantity *= int(1000.0/$std);
+          } elsif($UA_OptBalancing == 4) {
+            $OrderQuantity *= int(5000.0/$std);
+          } elsif($UA_OptBalancing == 5) {
+            $OrderQuantity *= int(10000.0/$std);
+          } elsif($UA_OptBalancing == 6) {
+            $OrderQuantity *= int(100000.0/$std);
+          } else {
+            die "Unknown Balancing Method";
+          }
+        }
+      }
+      if($OrderQuantity!=0) {
+        $FilledSomebody=1;
+        if($Position!=0) {
+          $UA_OpenEquity += $Position*($FillPrice-$UA_ReferencePrice);
+        } else {
+          $TradeEntryPrice = $FillPrice;
+        }
+        $Position += $OrderQuantity;
+        $UA_ReferencePrice = $FillPrice;
+        $StartPrice = $FillPrice;
+        push(@UAOpenPositionList,join(' ',$UA_True_Date[$#Date],$FillPrice,$OrderQuantity));
+        #push(@UATradeJournal,"TradeStarted $FillPrice $OrderQuantity");
+      }
+    } else { # if($OrderQuantity * $Position >= 0) { #($verb eq 'BUY')||($verb eq 'SELL')) {
+      #push(@UATradeResultList,$Position*($FillPrice-$TradeEntryPrice));
+      $FilledSomebody=1;
+      $UA_OpenEquity += (-$OrderQuantity)*($FillPrice-$UA_ReferencePrice);
+      #$UA_ReferencePrice = $FillPrice;
+      #$UA_ClosedEquity += $UA_OpenEquity;
+      #$UA_OpenEquity =0; $Position=0;
+      $Position += $OrderQuantity;
+      $TradeEntryPrice = '' if(!$Position);
+      my $i;
+      my($ExitDate, $ExitPrice, $ExitQuantity) = ($UA_True_Date[$#Date], $FillPrice, abs($OrderQuantity));
+      for($i=$#UAOpenPositionList;($i>=0)&&($ExitQuantity!=0);$i--) {
+        my($EntryDate,$EntryPrice,$OpenQuantity) = split(' ',$UAOpenPositionList[$i]);
+        my($TradeQuantity) = min($ExitQuantity,abs($OpenQuantity));
+        $TradeQuantity = -$TradeQuantity if($OpenQuantity>0);
+        my($HighestPrice,$LowestPrice)=($EntryPrice,$EntryPrice); {
+          for(my $j=$#Date;$j>=0;$j--) {
+            if($EntryDate == $UA_True_Date[$j]) {
+              $HighestPrice = max(@UA_True_High[$j .. $#Date]);
+              $LowestPrice  = min(@UA_True_Low [$j .. $#Date]);
+            }
+          }
+        }
+        push(@UATradeJournal,"ClosedTrade $EntryDate $ExitDate $EntryPrice $ExitPrice ".(-$TradeQuantity)." $HighestPrice $LowestPrice");
+        my($TradeEquity) = $TradeQuantity * ($ExitPrice-$EntryPrice);
+        $TradeEquity = -$TradeEquity if($OpenQuantity<0);
+        $UA_ClosedEquity += $TradeEquity;
+        $UA_OpenEquity -= $TradeEquity;
+        if($ExitQuantity>=abs($OpenQuantity)) {
+          $ExitQuantity -= abs($OpenQuantity);
+          $#UAOpenPositionList--;
+        } else {
+          $OpenQuantity += $TradeQuantity;
+          #if($OpenQuantity<0) {
+          #  $OpenQuantity += $TradeQuantity;
+          #} else {
+          #  $OpenQuantity -= $TradeQuantity;
+          #}
+          $UAOpenPositionList[$i]=join(' ',$EntryDate,$EntryPrice,$OpenQuantity);
+          $ExitQuantity = 0;
+        }
+      }
+      #push(@UATradeJournal,"TradeEnded $FillPrice $OrderQuantity");
+    }
+  }
+  return ($StartPrice, $FilledSomebody);
+}
+sub UA_PrintSystemStats {
+  if($Position != 0) {
+    my($NewRefPrice) = $UA_True_Close[$#Date];
+    $UA_OpenEquity += $Position*($NewRefPrice-$UA_ReferencePrice);
+    $UA_ReferencePrice = $NewRefPrice;
+  }
+  my($count,$txt);
+  $txt = "Position $Position\nOpenEquity $UA_OpenEquity\nClosedEquity $UA_ClosedEquity\n";
+  $count=3;
+  if($#UATradeJournal>=0) {
+    $count += ($#UATradeJournal+1);
+    $txt .= join("\n",@UATradeJournal)."\n";
+  }
+  if(($UA_TimeIndex==$#UA_True_Date)&&($#UAOpenPositionList>=0)) {
+    $count += ($#UAOpenPositionList+1);
+    $txt .= 'OpenTrade '.join("\nOpenTrade ",@UAOpenPositionList)."\n";
+  }
+  #@UATradeJournal = ();
+  print UA_OUTPUT_FH "System $count\n$txt";
+}
+sub SetUAMostRecentDataEarlyInArray {
+  my($t) = @_;
+  if($UAMostRecentDataEarlyInArray) {
+    if($t) {
+      return;
+    }
+  } else {
+    if(!$t) {
+      return;
+    }
+  }
+  $UAMostRecentDataEarlyInArray = $t;
+      @Date   = reverse(@Date  );
+      @Dydm   = reverse(@Dydm  );
+      @Open   = reverse(@Open  );
+      @High   = reverse(@High  );
+      @Low    = reverse(@Low   );
+      @Close  = reverse(@Close );
+      @Cash   = reverse(@Cash  );
+      @Vol    = reverse(@Vol   );
+      @Oi     = reverse(@Oi    );
+      @TVol   = reverse(@TVol  );
+      @TOi    = reverse(@TOi   );
+  if($UA_IsChartStudy) {
+      @Dydm2   = reverse(@Dydm2  );
+      @Open2  = reverse(@Open2 );
+      @High2  = reverse(@High2 );
+      @Low2   = reverse(@Low2  );
+      @Close2 = reverse(@Close2);
+      @Cash2  = reverse(@Cash2 );
+      @Vol2   = reverse(@Vol2  );
+      @Oi2    = reverse(@Oi2   );
+      @TVol2  = reverse(@TVol2 );
+      @TOi2   = reverse(@TOi2  );
+  }
+  $t;
+}
+UA_StudyOuterLoop();

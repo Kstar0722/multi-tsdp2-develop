@@ -1,0 +1,1601 @@
+
+function OHLCStudy
+  'example Data Access\OHLCStudy() = Returns the current OHLC
+  'MenuText Data Access\Open, High, Low, and Close
+  UA.NumReturns=4;
+  UA.SharePriceScale = 1;
+  UA.MostRecentDataEarlyInArray = 1;
+  UA.Title="OHLC";
+  call UA.SetReturn(1,UA.GetPrice(1,0),"Open","%.4lfL");
+  call UA.SetReturn(2,UA.GetPrice(2,0),"High","%.4lfL");
+  call UA.SetReturn(3,UA.GetPrice(3,0),"Low","%.4lfL");
+  call UA.SetReturn(4,UA.GetPrice(4,0),"Close","%.4lfL");
+  OHLCStudy = 2;
+end function
+
+function getNumDays 'helper
+  getNumDays = UA.NumDataDays;
+end function
+function HasSecondSeries 'helper
+  HasSecondSeries = (UA.Csinum2>0);
+end function
+function getIsStock 'helper
+  getIsStock = UA.GetIsStock();
+end function
+
+function getDate 'helper
+  input: index;
+  getDate = UA.GetIntData(1,index);
+end function
+function getDydm 'helper
+  input: index;
+  getDydm = UA.GetIntData(2,index);
+end function
+function getAVol 'helper
+  input: index;
+  getAVol = UA.GetIntData(3,index);
+end function
+function getAOi 'helper
+  input: index;
+  getAOi = UA.GetIntData(4,index);
+end function
+function getUVol 'helper
+  input: index;
+  getUVol = UA.GetIntData(5,index);
+end function
+function getUOi 'helper
+  input: index;
+  getUOi = UA.GetIntData(6,index);
+end function
+function getTVol 'helper
+  input: index;
+  getTVol = UA.GetIntData(7,index);
+end function
+function getTOi 'helper
+  input: index;
+  getTOi = UA.GetIntData(8,index);
+end function
+function getDydm2 'helper
+  input: index;
+  getDydm2 = UA.GetIntData(9,index);
+end function
+function getAVol2 'helper
+  input: index;
+  getAVol2 = UA.GetIntData(10,index);
+end function
+function getAOi2 'helper
+  input: index;
+  getAOi2 = UA.GetIntData(11,index);
+end function
+
+function getVolume 'helper
+  input: index;
+  getVolume = UA.GetIntData(3,index);
+end function
+function getOpenInterest 'helper
+  input: index;
+  getOpenInterest = UA.GetIntData(4,index);
+end function
+function getTotalVolume 'helper
+  input: index;
+  getTotalVolume = UA.GetIntData(7,index);
+end function
+function getTotalOpenInterest 'helper
+  input: index;
+  getTotalOpenInterest = UA.GetIntData(8,index);
+end function
+function getUVol2 'helper
+  input: index;
+  getUVol2 = UA.GetIntData(12,index);
+end function
+function getUOi2 'helper
+  input: index;
+  getUOi2 = UA.GetIntData(13,index);
+end function
+function getTVol2 'helper
+  input: index;
+  getTVol2 = UA.GetIntData(14,index);
+end function
+function getTOi2 'helper
+  input: index;
+  getTOi2 = UA.GetIntData(15,index);
+end function
+
+function getOpen 'helper
+  input: index;
+  getOpen = UA.GetPrice(1, index);
+end function
+function getHigh 'helper
+  input: index;
+  getHigh = UA.GetPrice(2, index);
+end function
+function getLow 'helper
+  input: index;
+  getLow = UA.GetPrice(3, index);
+end function
+function getClose 'helper
+  input: index;
+  getClose = UA.GetPrice(4, index);
+end function
+function getCash 'helper
+  input: index;
+  getCash = UA.GetPrice(5, index);
+end function
+function getOpen2 'helper
+  input: index;
+  getOpen2 = UA.GetPrice(6, index);
+end function
+function getHigh2 'helper
+  input: index;
+  getHigh2 = UA.GetPrice(7, index);
+end function
+function getLow2 'helper
+  input: index;
+  getLow2 = UA.GetPrice(8, index);
+end function
+function getClose2 'helper
+  input: index;
+  getClose2 = UA.GetPrice(9, index);
+end function
+function getCash2 'helper
+  input: index;
+  getCash2 = UA.GetPrice(10, index);
+end function
+function getUClose 'helper
+  input: index;
+  getUClose = UA.GetPrice(11, index);
+end function
+function getUClose2 'helper
+  input: index;
+  getUClose2 = UA.GetPrice(12, index);
+end function
+function getVolume2 'helper
+  input: index;
+  getVolume = UA.GetIntData(10,index);
+end function
+function getOpenInterest2 'helper
+  input: index;
+  getOpenInterest = UA.GetIntData(11,index);
+end function
+function getTotalVolume2 'helper
+  input: index;
+  getVolume = UA.GetIntData(14,index);
+end function
+function getTotalOpenInterest2 'helper
+  input: index;
+  getOpenInterest = UA.GetIntData(15,index);
+end function
+
+function CurrentDate
+  'example Data Access\CurrentDate = CurrentDate
+  'MenuText Data Access\Current Date
+  CurrentDate = UA.GetIntData(1,0);
+end function
+function Date
+  'example Data Access\Date = Date
+  'MenuText Data Access\Date
+  D = UA.GetIntData(1,0);
+end function
+function D
+  'example Data Access\D = Date
+  'MenuText Data Access\Date
+  D = UA.GetIntData(1,0);
+end function
+function O
+  'example Data Access\O = Open
+  'MenuText Data Access\Opening Price
+  O = Open;
+end function
+function H
+  'example Data Access\H = High
+  'MenuText Data Access\High Price
+  H = High;
+end function
+function L
+  'example Data Access\L = Low
+  'MenuText Data Access\Low Price
+  L = Low;
+end function
+function C
+  'example Data Access\C = Close
+  'MenuText Data Access\Closing Price
+  C = Close;
+end function
+function V
+  'example Data Access\V = Volume
+  'MenuText Data Access\Volume
+  V = Volume;
+end function
+function I
+  'example Data Access\I = Open Interest
+  'MenuText Data Access\Open Interest
+  I = OpenInterest;
+end function
+function GetSymbol
+  'example Factsheet\GetSymbol() = Symbol
+  'MenuText Factsheet\Symbol
+  GetSymbol = UA.Symbol;
+end function
+function GetName
+  'example Factsheet\GetName() = Name
+  'MenuText Factsheet\Name
+  GetName = UA.Name;
+end function
+function GetSectorCode
+  'example Factsheet\GetSectorCode() = Stock SectorCode
+  'MenuText Factsheet\Stock Sector Code
+  GetSectorCode = UA.SectorCode;
+end function
+function GetIndustryCode
+  'example Factsheet\GetIndustryCode() = Stock IndustryCode
+  'MenuText Factsheet\Stock Industry Code
+  GetIndustryCode = UA.IndustryCode;
+end function
+function GetExchange
+  'example Factsheet\GetExchange() = Exchange
+  'MenuText Factsheet\Exchange
+  GetExchange = UA.Exchange;
+end function
+function GetCvf
+  'example Factsheet\GetCvf() = Price Format
+  'MenuText Factsheet\Price Format
+  GetCvf = UA.Cvf;
+end function
+function GetEarningsPerShare
+  'example Factsheet\GetEarningsPerShare() = stock EarningsPerShare
+  'MenuText Factsheet\Stock Earnings Per Share
+  GetEarningsPerShare = UA.CurrentEarningsPerShare;
+end function
+function GetSharesOutstanding
+  'example Factsheet\GetSharesOutstanding() = stock SharesOutstanding
+  'MenuText Factsheet\Stock Shares Outstanding
+  GetSharesOutstanding = UA.SharesOutstanding;
+end function
+function GetNumInstitutionalShareHolders
+  'example Factsheet\GetNumInstitutionalShareHolders() = The number of institutional shareholders for a stock
+  'MenuText Factsheet\The number of institutional shareholders for a stock
+  GetNumInstitutionalShareHolders = UA.NumInstitutionalShareHolders;
+end function
+function GetPercentageInstitutionalShareHolders
+  'example Factsheet\GetPercentageInstitutionalShareHolders() = Percentage of shareholders who are Institutional for a stock
+  'MenuText Factsheet\Percentage of shareholders who are Institutional for a stock
+  GetPercentageInstitutionalShareHolders = UA.PercentageOfSharesHeldByInstitutions;
+end function
+function GetHasStockFundamentalData
+  'example Factsheet\GetHasStockFundamentalData() = HasStockFundamentalData
+  'MenuText Factsheet\Stock Has Balance Sheet Data
+  GetHasStockFundamentalData = UA.HasStockFundamentalData;
+end function
+
+function max 'helper
+  inputs: v1, v2;
+  if(v1>v2) then
+    max = v1
+  else
+    max = v2;
+end function
+function min 'helper
+  inputs: v1, v2;
+  if(v1<v2) then
+    min = v1
+  else
+    min = v2;
+end function
+function iff 'helper  same as iif
+  inputs: c, v1, v2;
+  if (c) then
+    iff = v1
+  else
+    iff = v2;
+end function
+function iif 'helper
+  inputs: c, v1, v2;
+  if c then
+    iif = v1
+  else
+    iif = v2;
+end function
+function Between 'helper
+  inputs: v,minv,maxv;
+  Between = (v>=minv)and(v<=maxv);
+end function
+
+' here are some example studies by Pepe and Steve
+
+function MAOfClose
+  'example Moving Averages\MAOfClose(5) = 5-day mov avg of close
+  'MenuText Moving Averages\Moving Average of Close
+  inputs: size;
+  UA.MostRecentDataEarlyInArray = 1;
+  MAOfClose = MAOfField(size,4);
+end function
+function MAOfVol
+  'example Moving Averages\MAOfVol(5) = 5-day mov avg of volume
+  'MenuText Moving Averages\Moving Average of Volume
+  inputs: size;
+  UA.MostRecentDataEarlyInArray = 1;
+  MAOfVol = MAOfField(size,5);
+end function
+function MAOfOi
+  'example Moving Averages\MAOfOi(5) = 5-day mov avg of OI
+  'MenuText Moving Averages\Moving Average of Open Interest
+  inputs: size;
+  UA.MostRecentDataEarlyInArray = 1;
+  MAOfOi = MAOfField(size,6);
+end function
+function MAOfField 'helper
+  inputs: size,field;
+  vars: total, i, x;
+  if(getNumDays()<size) then
+    size = getNumDays();
+  total = 0;
+  if field <=4 then begin
+    for i = 0 to (size-1) begin
+      total = total + UA.GetPrice(field,i);
+    end;
+    UA.SharePriceScale = 1;
+  end else if field = 5 then begin
+    for i = 0 to (size-1) begin
+      total = total + UA.GetVol(i);
+    end;
+    UA.SharePriceScale = 0;
+  end else if field = 6 then begin
+    for i = 0 to (size-1) begin
+      total = total + UA.GetOi(i);
+    end;
+    UA.SharePriceScale = 0;
+  end;
+  MAOfField = (total+0.0)/size;
+end function
+function MACross
+  'example Moving Averages\MACross(3,5) = 100*(MA3 - MA5)/(MA3 + MA5)
+  'MenuText Moving Averages\Moving Average Crossover System
+  inputs: p1(3), p2(5);
+  vars: ma1, ma2, indicator, TargetPosition;
+  ma1 = Average(Close,p1);
+  ma2 = Average(Close,p2);
+  indicator = 100*(ma1 - ma2)/(ma1 + ma2);
+  if indicator<0 then
+    TargetPosition = -1
+  else if indicator>0 then
+    TargetPosition = +1
+  else
+    TargetPosition = 0;
+  StandardOrderGenerator(TargetPosition);
+  MACross = indicator;
+end function
+function StandardOrderGenerator 'helper
+  inputs: TargetPosition;
+  if TargetPosition <> UA.Position then begin
+    if UA.Position > 0 then
+      call UA.PlaceOrder("ExitLong","","",-1,1,"",0.0,0.0,-1)
+    else if UA.Position < 0 then
+      call UA.PlaceOrder("ExitShort","","",-1,1,"",0.0,0.0,-1);
+    if TargetPosition>0 then
+      call UA.PlaceOrder("Buy","","",-1,1,"",0.0,0.0,-1)
+    else
+      call UA.PlaceOrder("Sell","","",-1,1,"",0.0,0.0,-1);
+  end;
+end function
+
+function HighestHigh
+  'example Misc\HighestHigh(5) = the highest of the last 5 highs
+  'MenuText Misc\The Highest High of the Last Days
+  inputs: size;
+  UA.MostRecentDataEarlyInArray = 1;
+  HighestHigh = HighestOfField(size,2,0);
+end function
+function HighestClose
+  'example Misc\HighestClose(5) = the highest of the last 5 closes
+  'MenuText Misc\The Highest Close of the Last Days
+  inputs: size;
+  UA.MostRecentDataEarlyInArray = 1;
+  HighestClose = HighestOfField(size,4,0);
+end function
+function getField 'helper
+  input: field, offset;
+  var: z(0);
+         if(field <= 5) then
+      z = UA.GetPrice(field,offset) 'ohlc cash
+    else if(field =  6) then
+      z = UA.GetIntData(5,offset) 'v
+    else if(field =  7) then
+      z = UA.GetIntData(6,offset) 'oi
+    else if(field <=12) then
+      z = UA.GetPrice(field-2,offset) 'ohlc cash series 2
+    else if(field = 13) then
+      z = UA.GetIntData(10,offset) 'v series 2
+    else if(field = 14) then
+      z = UA.GetIntData(11,offset); 'oi series 2
+  getField = z;
+end function
+
+function HighestOfField 'helper
+  inputs: size,field,offset;
+  if(size=0) then size = 15;
+  if(field=0) then field = 4;
+  'if(offset=0) then offset = 0;
+  if(size+offset>getNumDays()) then size=getNumDays();
+  UA.MostRecentDataEarlyInArray = 1;
+  dim total,i,z;
+  for i=0 to size-1 begin
+    z = getField(field,i+offset);
+    if((i=0)or(z>total)) then total = z;
+  end;
+  UA.SharePriceScale = Between(field,1,5) or Between(field,8,12);
+  HighestOfField = total;
+end function
+function LowestLow
+  'example Misc\LowestLow(5) = the lowest of last 5 lows
+  'MenuText Misc\The Lowest Low of the Last Days
+  inputs: size;
+  UA.MostRecentDataEarlyInArray = 1;
+  LowestLow = LowestOfField(size,3,0);
+end function
+function LowestClose
+  'example Misc\LowestClose(5) = the lowest of last 5 closes
+  'MenuText Misc\The Lowest Close of the Last Days
+  inputs: size;
+  UA.MostRecentDataEarlyInArray = 1;
+  LowestClose = LowestOfField(size,4,0);
+end function
+function LowestOfField 'helper
+  inputs: size,field,offset;
+  if(size=0) then size = 15;
+  if(field=0) then field = 4;
+  if(offset=0) then offset = 0;
+  if(size+offset>getNumDays()) then size=getNumDays();
+  UA.MostRecentDataEarlyInArray = 1;
+  dim total,i,z;
+  for i=0 to size-1 begin
+    z = getField(field,i+offset);
+    if((i=0)or(z<total)) then total = z;
+  end;
+  UA.SharePriceScale = Between(field,1,5)or Between(field,8,12);
+  LowestOfField = total;
+end function
+function AverageOfField 'helper
+  inputs: size,field,offset;
+  if(size=0) then size = 15;
+  if(field=0) then field = 4;
+  if(offset=0) then offset = 0;
+  if(size+offset>getNumDays()) then size=getNumDays();
+  UA.MostRecentDataEarlyInArray = 1;
+  dim total,i,z;
+  for i=0 to size-1 begin
+    z = getField(field,i+offset);
+    total = total + z;
+  end;
+  UA.SharePriceScale = Between(field,1,5) or Between(field,8,12);
+  AverageOfField = CDbl(total)/size;
+end function
+
+function RSI
+  'example Classic\RSI(5) = 5-day RSI
+  'MenuText Classic\RSI
+  inputs: Period;
+  RSI = UA.InternalizedRSI(Period);
+end function
+function Oscillator
+  'example Classic\Oscillator(5) = 5-day Oscillator
+  'MenuText Classic\Oscillator
+  ' Jim Waters and Larry Williams published this A/D oscillator in 1972
+  inputs: size;
+  Oscillator = UA.InternalizedOscillator(size);
+end function
+function Stochastic
+  'example Classic\Stochastic(5,3,3) = 5/3/3-day Stocastic
+  'MenuText Classic\Stochastic
+  inputs: size,First_moving,Second_moving;
+  call UA.InternalizedStochastic(size,First_moving,Second_moving);
+end function
+function Internal_True_Range 'helper
+  inputs: index;
+  Internal_True_Range = UA.InternalizedTrueRange(index);
+end function
+function Average_True_Range
+  'example Helpers\Average_True_Range(5) = 5-day Average True Range
+  'MenuText Helpers\Average True Range
+  inputs: period;
+  Average_True_Range = UA.InternalizedAverageTrueRange(period);
+end function
+function Ultimate_Oscillator
+  'example Classic\Ultimate_Oscillator(7,14,28) = Ultimate Oscillator
+  'MenuText Classic\Ultimate Oscillator
+  inputs: p1,p2,p3;
+  Ultimate_Oscillator = UA.InternalizedUltimateOscillator(p1,p2,p3);
+end function
+function Percentage_R
+  'example Classic\Percentage_R(5) = 5-day Percent R
+  'MenuText Classic\Percentage R
+  inputs: period;
+  Percentage_R = UA.InternalizedPercentageR(period);
+end function
+function InternalMacd
+  'example Classic\InternalMacd(5,10,3) = 5,10,3-day Macd
+  'MenuText Classic\Moving Average Convergence/Divergence
+  inputs: p1,p2,p3;
+  InternalMacd = UA.InternalizedMacd(p1,p2,p3);
+end function
+
+function mysqrt 'helper
+  inputs: x;
+  if x < 1e-6 then
+    mysqrt = 0
+  else
+    mysqrt = sqr(x);
+end function
+function my_log 'helper
+  inputs: x;
+  if x < 1e-6 then
+    my_log = 0
+  else
+    my_log = log(x);
+end function
+
+function Volatility
+  'example Classic\Volatility(5) = 5-day Volatility
+  'MenuText Classic\Volatility
+  inputs: size;
+  Volatility = UA.InternalizedVolatility(size);
+end function
+function BollingerBands
+  'example Classic\BollingerBands(15,1.5) = 15-day Bollinger Bands
+  'MenuText Classic\Bollinger Bands
+  inputs: Period,Deviations;
+  call UA.InternalizedBollingerBands(Period,Deviations);
+end function
+function InternalADX
+  'example Classic\InternalADX(14) = 14-day ADX needs 53 days
+  'MenuText Classic\ADX
+  inputs: Period;
+  call UA.InternalizedADX(Period);
+end function
+
+function MovingAverageEnvelope
+  'example MovingAverageEnvelope(15,7) = 7% bands around the 15-day moving average
+  'MenuText Moving Averages\Moving Average Envelope
+  inputs: Period,Percent;
+  dim tx, i;
+  if(getNumDays() < Period) then exit function;
+  UA.MostRecentDataEarlyInArray = 1;
+  tx = 0;
+  for i = 0 to (Period-1) begin
+    tx = tx + getClose(i);
+  end;
+  tx = tx/Period;
+  UA.NumReturns=3;
+  UA.SharePriceScale = 1;
+  UA.Title="MovingAverageEnvelope";
+  call UA.SetReturn(1,(1+Percent/100.0)*tx,"Avg+","%.4lfL");
+  call UA.SetReturn(2,                  tx,"Avg" ,"%.4lfL");
+  call UA.SetReturn(3,(1-Percent/100.0)*tx,"Avg-","%.4lfL");
+end function
+
+function InvertExchangeRate
+  'example Conversions\InvertExchangeRate
+  'MenuText Conversions\Invert Currency Exchange Rate
+  UA.MostRecentDataEarlyInArray = 1;
+  UA.SharePriceScale = 0;
+  InvertExchangeRate = 1/getClose(0);
+end function
+
+function PriceToYield
+  'example Conversions\PriceToYield(2,getClose(0)) = The current (2Yr Note) close in Yield
+  'MenuText Conversions\Convert Bond Price to Yield
+  inputs: Period,Price;
+  vars: ra, rb, n, rc;
+  UA.MostRecentDataEarlyInArray = 1;
+  if Period = 2 then begin
+    ra = 80;
+    rb = 112;
+    n = 5;
+    redim rc(5);
+    rc(0) =  0.174054753352307;
+    rc(1) = -0.0916843114577689;
+    rc(2) =  0.00495594435566842;
+    rc(3) = -0.000319781380483489;
+    rc(4) =  2.21686795147668e-005;
+  end else if Period = 5 then begin
+    ra = 70;
+    rb = 130;
+    n = 5;
+    redim rc(5);
+    rc(0) =  0.133186887907308;
+    rc(1) = -0.0725963090275191;
+    rc(2) =  0.00669003706862083;
+    rc(3) = -0.00077378402856461;
+    rc(4) =  9.65931149668059e-005;
+  end else if Period = 10 then begin
+    ra = 50;
+    rb = 160;
+    n = 7;
+    redim rc(7);
+    rc(0) =  0.133404187233664;
+    rc(1) = -0.078125269617835;
+    rc(2) =  0.013952163041475;
+    rc(3) = -0.00314877806752764;
+    rc(4) =  0.000779791999059524;
+    rc(5) = -0.000201884691969032;
+    rc(6) =  5.03235744164126e-005;
+  end else if Period = 30 then begin
+    ra = 60;
+    rb = 220;
+    n = 9;
+    redim rc(9);
+    rc(0) =  0.0857647673446972;
+    rc(1) = -0.0516397338469664;
+    rc(2) =  0.0110559646214451;
+    rc(3) = -0.0029617362287536;
+    rc(4) =  0.000863628518257491;
+    rc(5) = -0.000262758034029029;
+    rc(6) =  8.18430431670138e-005;
+    rc(7) = -2.56525191629725e-005;
+    rc(8) =  7.42547400608522e-006;
+  end else
+    exit function;
+  UA.SharePriceScale = 0;
+  UA.Title="Yield";
+  if Price < ra then
+    Price = ra
+  else if Price > rb then
+    Price = rb;
+  PriceToYield = 100*chebev(ra,rb,n,Price,rc);
+end function
+function chebev 'helper
+  inputs: a,b,m,x,c;
+  vars: d,dd,sv,y,y2,j;
+  d = 0;
+  dd = 0;
+  if (x-a)*(x-b)>0 then exit function;
+  y = (2*x-a-b)/(b-a);
+  y2 = 2*y;
+  for j = m-1 DOWNTO 1 begin
+    sv = d;
+    d = y2*d-dd+c(j);
+    dd = sv;
+  end;
+  chebev = y*d-dd+c(0)/2;
+end function
+
+function ChangeOfPriceEarnings
+  'example Helpers\ChangeOfPriceEarnings(5) = Returns the change in the P/E cased by the change in price over the last period
+  'MenuText Helpers\Change of Price Earnings
+  inputs: period;
+  if(GetHasStockFundamentalData()<1) then
+    exit function;
+  if(getNumDays()<period) then
+    exit function;
+  if(GetEarningsPerShare()<1e-6) then
+    exit function;
+  ChangeOfPriceEarnings = (getClose(0)-getClose(period-1)) / GetEarningsPerShare();
+end function
+
+function VolumeRateOfChange
+  'example Helpers\VolumeRateOfChange(5) = Rate of Change of Volume over last 6 days
+  'MenuText Helpers\Rate of Change of Volume
+  inputs: period;
+  VolumeRateOfChange = (getVolume(0)-getVolume(period))/getVolume(period);
+end function
+
+function WeightedClose
+  'example Helpers\WeightedClose(0) = 50% Close +  25% High + 25% Low
+  'MenuText Helpers\Weighted Close
+  inputs: index;
+  WeightedClose = (2*getClose(index)+getHigh(index)+getLow(index))/4;
+end function
+function TypicalPrice
+  'example Helpers\TypicalPrice(0) = 33% Close +  33% High + 33% Low
+  'MenuText Helpers\Typical Close
+  inputs: index;
+  TypicalPrice = (getClose(index)+getHigh(index)+getLow(index))/3;
+end function
+function AveragePrice
+  'example Ez\AveragePrice(0) = 25% Close +  25% High + 25% Low + 25% Open
+  'MenuText Ez\Average Price
+  inputs: index;
+  AveragePrice = (getClose(index)+getHigh(index)+getLow(index)+getOpen(index))/4;
+end function
+function AvgTrueRange
+  'example Ez\AvgTrueRange(5) = Average of the True Range
+  'MenuText Ez\Average True Range
+  inputs: period;
+  AvgTrueRange = Average(TrueRange,period);
+end function
+function ChaikinVolty
+  'example Ez\ChaikinVolty(High,Low,10,12)
+  'MenuText Ez\Chaikin Volatility
+  inputs: Price1(NumericSeries), Price2(NumericSeries), Length(10), ROCLen(12) ;
+  ChaikinVolty = RateOfChange ( XAverage( Price1 - Price2, Length ) , ROCLen ) ;
+  UA.NumReturns=2;
+  UA.SharePriceScale = 0;
+  call UA.SetReturn(1,ChaikinVolty,"Chaikin","%.4lfL");
+  call UA.SetReturn(2,0,"Zero","%.4lfL");
+end function
+function RateOfChange
+  'example Ez\RateOfChange(Close,5)
+  'MenuText Ez\Rate of Change
+  inputs: Price(NumericSeries),Length(NumericSimple);
+  if Price[Length] <> 0 then
+	  RateOfChange = (Price/Price[Length] - 1) * 100
+  else
+	  RateOfChange = 0 ;
+end function
+function VolumeROC
+  'example Ez\VolumeROC(5)
+  'MenuText Ez\Volume Rate of Change
+  input: Length(NumericSimple);
+  if(getNumDays()<=Length) then exit function;
+  if v[Length]<>0 then
+  	VolumeROC = (v - v[Length])/v[Length]
+  else
+  	VolumeROC=0;
+end function
+
+function LWAccDis
+  'example SCTT\LWAccDis() = LWAccDis
+  'MenuText SCTT\LW Acc Dis
+  vars:  X(0), CumX(0);
+
+  if CurrentBar = 1 then begin
+  	if c > c[1] then
+	  	X = c-TrueLow
+  	else if c  < c[1] then
+	   	X = c-TrueHigh
+  	else
+	  	X=0;
+  	CumX=X;
+  end else begin
+  	if c > c[1] then
+  		X = c-TrueLow
+	  else if c  < c[1] then
+	 	  X = c-TrueHigh
+  	else
+	  	X=0;
+  	CumX=CumX+X;
+  end;
+  LWAccDis = CumX;
+end function
+
+function AccumDist
+  inputs: MyVol(NumericSeries) ;
+  'example Ez\AccumDist(Volume)
+  'MenuText Ez\Accumulation/Distribution of Volume
+
+  if (High - Low)  * MyVol > 0 then
+  	AccumDist = AccumDist[1] + ((Close - Open) / (High - Low) * MyVol / 100000)
+  else
+  begin
+   	if currentbar = 0 then
+  		AccumDist = 0
+  	else
+	  	AccumDist = AccumDist[1] ;
+  end;
+end function
+
+
+function ADX
+  'example Ez\ADX(5)
+  'MenuText Ez\ADX
+inputs:  Length(NumericSimple) ;
+vars  :  Counter(0), CummDMI(0), tReturn(0) ;
+
+tReturn = 0 ;
+if CurrentBar >= 1 and Length > 0
+then begin
+	if CurrentBar <  Length
+	then begin
+		CummDMI = 0 ;
+		'for Counter = 0 to (CurrentBar - 1)
+		for Counter = (CurrentBar - 1) downto 0
+		begin
+			CummDMI = CummDMI + DMI(Length)[Counter] ;
+		end ;
+		tReturn = CummDMI / CurrentBar ;
+	end
+	else
+		tReturn = (ADX[1] * (Length - 1) + DMI(Length)) / Length ;
+end ;
+ADX = tReturn ;
+end function
+
+function ADXR
+  'example Ez\ADXR(5)
+  'MenuText Ez\ADXR
+  inputs: MyRange (NumericSimple) ;
+  vars  : tReturn  (0) ;
+
+  tReturn = 0 ;
+  if (CurrentBar < MyRange) then begin
+	if (CurrentBar = 1) then
+		tReturn =  ADX(MyRange)
+	else
+		tReturn = (ADX(MyRange) + ADX(MyRange)[CurrentBar-1]) / 2 ;
+  end else
+  	tReturn = (ADX(MyRange) + ADX(MyRange)[MyRange-1 ]) / 2 ;
+
+  ADXR = tReturn ;
+end function
+
+function Summation
+  'example Ez\Summation(Volume,5)
+  'MenuText Ez\Summation
+  Inputs: Price(NumericSeries), Length(NumericSimple);
+  Variables: Counter(0), Sum(0);
+
+  Sum = 0;
+
+  For Counter = 0 To Length - 1 Begin
+	  Sum = Sum + Price[Counter];
+  End;
+
+  Summation = Sum;
+end function
+function Average
+  'example Ez\Average(Volume,5)
+  'MenuText Ez\Average
+  Inputs: Price(NumericSeries), Length(NumericSimple);
+  Variables: Sum(0), Counter(0);
+
+  Sum = 0;
+
+  For counter = 0 To Length - 1 Begin
+	  Sum = Sum + Price[counter];
+  End;
+
+  If Length > 0 Then
+	  Average = Sum / Length
+  Else
+	  Average = 0;
+end function
+
+function XAverage
+  'example Ez\XAverage(Volume,5)
+  'MenuText Ez\Exponential Moving Average
+  inputs: Price(NumericSeries), Length(NumericSimple) ;
+  vars   : Factor(0);
+  if Length + 1 <> 0
+  then begin
+	if CurrentBar <= 1
+	then begin
+		Factor = 2 / (Length + 1);
+		XAverage = Price;
+	end
+	else
+		XAverage = Factor * Price + (1 - Factor) * XAverage[1];
+  end;
+end function
+
+function AvgPrice
+  'example Ez\AvgPrice()
+  'MenuText Ez\Average Price (Includes Open If Available)
+  if (Open <> 0) then
+  	AvgPrice = (O + H + L + C) / 4
+  else
+  	AvgPrice =  (H + L + C) / 3;
+end function
+
+function UltimateOsc
+  'example Ez\UltimateOsc(7,14,28)
+  'MenuText Ez\Ultimate Oscillator
+inputs: Avg1(NumericSimple), Avg2(NumericSimple), Avg3(NumericSimple);
+vars  : V1(0), V2(0), V3(0), V4(0), V5(0),V6(0), V7(0), V8(0), V9(0), V10(0), V11(0);
+
+V1  = Average(Close - TrueLow,Avg1) * Avg1;
+V2  = Average(Close - TrueLow,Avg2) * Avg2;
+V3  = Average(Close - TrueLow,Avg3) * Avg3;
+V4  = Average(TrueRange,Avg1) * Avg1;
+V5  = Average(TrueRange,Avg2) * Avg2;
+V6  = Average(TrueRange,Avg3) * Avg3;
+if V4 = 0 or V5 = 0 or V6 = 0 then 
+	UltimateOsc = 0
+else 
+begin
+	V9 = (V1 / V4) * 4;
+	V10 = (V2 / V5) * 2;
+	V11 = (V3 / V6);
+	UltimateOsc = (V9 + V10 + V11) / 7;
+end;
+end function
+
+function CCI
+  'example Ez\CCI(5)
+  'MenuText Ez\Commodity Channel Index
+inputs : Length(NumericSimple);
+vars   : Sum(0),Counter(0),MD(0),Avg(0);
+
+if Length > 0
+then begin
+	Avg = Average(High+Low+Close,Length);
+	MD = 0;
+	for counter = 0 to Length - 1
+	begin
+		MD = MD + AbsValue(High[counter] + Low[counter] + Close[counter] - Avg);
+	end;
+	MD = MD / Length;
+	if MD = 0 then
+		CCI = 0
+	else
+		CCI = (High + Low + Close - Avg) / (0.015 * MD);
+end
+else
+	CCI = 0;
+end function
+
+function CSI
+  'example Ez\CSI(10.00,14.00,5)
+  'MenuText Ez\Commodity Selection Index
+inputs: Mrgn(NumericSimple),Comm(NumericSimple),Length(NumericSimple);
+vars  : K(0),ATR14(0),MyRange(14),Counter(0),TR14(0);
+
+if CurrentBar = 1 then begin
+	MyRange = Length;
+	if MyRange > 0 And Mrgn > 0 And Comm >= 0
+	then begin
+		K = 100 * (BigPointValue / SquareRoot(Mrgn) / (150 + Comm));
+		for Counter = 0 to MyRange-1
+		begin
+			TR14 = TR14 + TrueRange[Counter];
+		end;
+		ATR14 = TR14 / MyRange;
+		CSI = K * ADXR(Length) * ATR14;
+	end
+	else
+		CSI = 0;
+end
+else 
+begin
+	if MyRange + TrueRange > 0 and MyRange > 0
+	then begin
+		TR14 = TR14[1] - TR14 / MyRange + TrueRange;
+		ATR14 = TR14 / MyRange;
+		CSI = K * ADXR(Length) * ATR14;
+	end;
+end;
+end function
+
+function DMI
+'example Ez\DMI(5)
+  'MenuText Ez\Directional Movement Index
+inputs : Length(NumericSimple);
+vars: dmip, dmim;
+dmip = DMIPlus(Length);
+dmim = DMIMinus(Length);
+
+if dmip+dmim = 0 then
+	DMI = 0
+else
+	DMI = 100 * AbsValue(dmip-dmim) / (dmip+dmim);
+	'DMI = dmip; 'AbsValue(dmip-dmim);
+end function
+
+
+function TrueHigh
+  'example Ez\TrueHigh()
+  'MenuText Ez\True High
+  if close[1] > high then
+  	TrueHigh = close[1]
+  else
+  	TrueHigh = high;
+end function
+function TrueLow
+  'example Ez\TrueLow()
+  'MenuText Ez\True Low
+  if close[1] < low then
+  	TrueLow = close[1]
+  else
+  	TrueLow = Low;
+end function
+function TrueRange
+  'example Ez\TrueRange()
+  'MenuText Ez\True Range
+TrueRange = TrueHigh - TrueLow;
+end function
+
+function DMIMinus
+  'example Ez\DMIMinus(5)
+  'MenuText Ez\Directional Movement Index Minus
+inputs : Length(NumericSimple);
+var    : Counter(0),   TRange(0),  MyRange(0), MinusDM14(0), MinusDM(0), PlusDM(0) ;
+MyRange = Length;
+
+if CurrentBar = 1
+then begin
+	MyRange   = Length ;
+	DMIMinus  = 0 ;
+	MinusDM14 = 0 ;
+	TRange    = 0 ;
+	for Counter = 0 to MyRange-1
+	begin
+		if (High[Counter  ] - High[Counter+1] < 0)	then
+			PlusDM  = 0
+		else
+			PlusDM  = High[Counter  ] - High[Counter+1] ;
+		if (Low [Counter+1] - Low [Counter  ] < 0) then
+			MinusDM = 0
+		else
+			MinusDM = Low [Counter+1] - Low [Counter  ] ;
+
+		if PlusDM >= MinusDM then
+			MinusDM = 0;
+		{ Plus DM not set to 0 because it is not used }
+		TRange    = TRange    + TrueRange[Counter] ;
+		MinusDM14 = MinusDM14 + MinusDM ;
+	end;
+	if TRange <> 0 then
+		DMIMinus = 100 * MinusDM14 / TRange
+	else
+		DMIMinus = 0;
+end
+else if CurrentBar > 1
+then begin
+	if High[0]-High[1] < 0 then
+		PlusDM  = 0
+	else
+		PlusDM  = High[0] - High[1];
+
+	if Low [1]-Low [0] < 0 then
+		MinusDM = 0
+	else
+		MinusDM = Low [1] - Low [0] ;
+
+	if PlusDM >= MinusDM then
+		MinusDM = 0 ;
+	{ Plus DM not set to 0 because it is not used }
+	if MyRange > 0
+	then begin
+		TRange    = TRange   [1] - (TRange   [1] / MyRange) + TrueRange;
+		MinusDM14 = MinusDM14[1] - (MinusDM14[1] / MyRange) + MinusDM;
+	end;
+	if TRange <> 0 then
+		DMIMinus = 100 * MinusDM14 / TRange
+	else
+		DMIMinus = 0;
+end;
+end function
+
+function DMIPlus
+  'example Ez\DMIPlus(5)
+  'MenuText Ez\Directional Movement Index Plus
+inputs : Length (NumericSimple) ;
+vars   : Counter (0), TRange(0), MyRange(0), PlusDM14(0), PlusDM(0), MinusDM(0);
+  MyRange = Length;
+
+if CurrentBar = 1
+then begin
+	MyRange  = Length;
+	PlusDM14 = 0;
+	TRange   = 0;
+	for Counter = 0 to MyRange-1
+	begin
+  	if (High[Counter  ] - High[Counter+1] < 0) then
+	  	PlusDM  = 0
+  	else
+	  	PlusDM  = High[Counter  ] - High[Counter+1];
+  	if (Low [Counter+1] - Low [Counter  ] < 0) then
+	  	MinusDM = 0
+  	else
+	  	MinusDM = Low [Counter+1] - Low [Counter  ];
+  	if MinusDM >= PlusDM then
+	  	PlusDM = 0;
+  	{ MinusDM not set to 0 because it is not used }
+  	TRange   = TRange   + TrueRange[Counter] ;
+        PlusDM14 = PlusDM14 + PlusDM ;
+  end;
+if (TRange <> 0) then 
+	DMIPlus = 100 * PlusDM14 / TRange
+else
+	DMIPlus = 0 ;
+end
+else if CurrentBar > 1 
+then begin
+	if High[0]-High[1] < 0 then 
+		PlusDM  = 0
+	else 
+		PlusDM  = High[0]-High[1];
+	if Low [1]-Low [0] < 0 then 
+		MinusDM = 0
+	else
+		MinusDM = Low [1]-Low [0];
+	if MinusDM >= PlusDM then
+		PlusDM = 0;
+	{ MinusDM not set to 0 because it is not used }
+	if MyRange > 0 
+	then begin
+		TRange   = TRange  [1] - (TRange  [1] / MyRange) + TrueRange;
+		PlusDM14 = PlusDM14[1] - (PlusDM14[1] / MyRange) + PlusDM;
+	end;
+	if (TRange <> 0) then 
+		DMIPlus = 100 * PlusDM14 / TRange
+	else 
+		DMIPlus = 0 ;
+end ;
+end function
+
+
+function FastD
+  'example Ez\FastD(5)
+  'MenuText Ez\Fast D
+input : Length(NumericSimple);
+vars  : Factor(0);
+
+if CurrentBar <= 1
+then begin
+	Factor = 2 / (3 + 1);
+	FastD = FastK(Length);
+end
+else
+	FastD = FastD[1] + (Factor * (FastK(Length) - FastD[1]));
+end function
+
+function FastK
+  'example Ez\FastK(5)
+  'MenuText Ez\Fast K
+inputs : Length(NumericSimple);
+
+Value1 = Lowest(Low,Length);
+Value2 = Highest(High,Length) - Value1;
+Value3 = Close;
+
+if Value2 > 0 then
+	FastK = (Value3 - Value1) / Value2 * 100
+else
+	FastK = 0;
+end function
+
+function Highest
+  'example Ez\Highest(High,5)
+  'MenuText Ez\Highest
+inputs : Price(NumericSeries),Length(NumericSimple);
+var    : Counter(0),MyHigh(0),MyHighestBar(0);
+  MyHigh = -999999999;
+
+if CurrentBar = 1 
+then begin
+	for Counter = 0 to Length - 1 
+	begin
+		if Price[Counter] > MyHigh
+		then begin
+			MyHigh = Price[Counter];
+			MyHighestBar = Counter;
+		end;
+	end;
+end 
+else 
+begin
+	if Price >= MyHigh 
+	then begin
+		MyHigh = Price;
+		MyHighestBar = 0;
+	end
+	else 
+	begin
+		MyHighestBar = MyHighestBar[1] +1;
+		if MyHighestBar >= Length 
+		then begin
+			MyHigh = -99999999;
+			for Counter = 0 to Length - 1
+			begin
+				if Price[Counter] > MyHigh 
+				then begin
+					MyHigh = Price[Counter];
+					MyHighestBar = Counter;
+				end;
+			end;
+		end;
+	end;
+end;
+Highest = MyHigh;
+end function
+
+function FastHighestBar 'helper
+inputs : Price(NumericSeries),Length(NumericSimple);
+var    : Counter(0),MyHigh(-999999999),MyHighestBar(0);
+
+if CurrentBar = 1
+then begin
+	for Counter = 0 to Length - 1
+	begin
+		if Price[Counter] > MyHigh
+		then begin
+			MyHigh = Price[Counter];
+			MyHighestBar = Counter;
+		end;
+	end;
+end
+else
+begin
+	if Price >= MyHigh
+	then begin
+		MyHigh = Price;
+		MyHighestBar = 0;
+	end
+	else
+	begin
+		MyHighestBar = MyHighestBar[1] +1;
+		if MyHighestBar >= Length
+		then begin
+			MyHigh = -99999999;
+			for Counter = 0 to Length - 1
+			begin
+				if Price[Counter] > MyHigh
+				then begin
+					MyHigh = Price[Counter];
+					MyHighestBar = Counter;
+				end;
+			end;
+		end;
+	end;
+end;
+FastHighestBar = MyHighestBar;
+end function
+
+function HighestBar
+  'example Ez\HighestBar(Close,5)
+  'MenuText Ez\Highest Bar
+inputs : Price(NumericSeries),Length(NumericSimple);
+HighestBar = FastHighestBar(Price,Length) + CurrentBar - BarNumber ;
+end function
+
+function BarNumber
+  'example Ez\BarNumber
+  'MenuText Ez\Bar Number
+  BarNumber = BarNumber[1] + 1 ;
+end function
+
+function HPI
+  'example Ez\HPI(100,.1)
+  'MenuText Ez\HPI
+Inputs: Mult(NumericSimple), Factor(NumericSimple);
+Variables: IDiff(0), IMin(0), K(0), HalfRange(0);
+
+IDiff = 2 * AbsValue(OpenInt[0] - OpenInt[1]);
+
+If OpenInt[0] < OpenInt[1] Then
+	IMin = OpenInt[0]
+Else
+	IMin = OpenInt[1];
+
+HalfRange = (High + Low) * .5;
+
+If IMin <> 0 Then Begin
+	If HalfRange > HalfRange[1] Then
+		K = (HalfRange - HalfRange[1]) * Mult * Volume * (1 + IDiff / IMin)
+	Else
+		K = (HalfRange - HalfRange[1]) * Mult * Volume * (1 - IDiff / IMin);
+		If CurrentBar <= 1 Then
+		HPI = K
+	Else
+		HPI = HPI[1] + ((K - HPI[1]) * Factor);
+End
+Else
+	HPI = 0;
+end function
+
+function LinearRegAngle
+  'example Ez\LinearRegAngle(Close,5)
+  'MenuText Ez\Linear Regression Angle
+inputs: Price(NumericSeries),Len(NumericSimple);
+vars  : X(0),Num1(0),Num2(0),SumBars(0), SumSqrBars(0),SumY(0),Sum1(0),Sum2(0),
+        Slope(0);
+
+if Len = 0 then
+	LinearRegangle=0;
+
+Sum1        = 0;
+SumBars = Len*(Len-1)/2;
+SumSqrBars = (Len-1)*Len*(2*Len-1)/6;
+for X = 0 to Len-1 
+begin
+	Sum1 = Sum1 + X*Price[X];
+end;
+SumY = Summation(Price,Len);
+Sum2 = SumBars * SumY;
+Num1 = Len*Sum1 - Sum2;
+Num2 = SumBars*SumBars - Len*SumSqrBars;
+if (Num2 <> 0) then
+	Slope = Num1 / Num2
+else
+	Slope = 0;
+LinearRegAngle = ArcTangent(Slope);
+end function
+
+function LinearRegValue
+  'example Ez\LinearRegValue(Close,5,2)
+  'MenuText Ez\Linear Regression Value
+inputs: Price(NumericSeries),Len(NumericSimple),TargetB(NumericSimple);
+vars   : X(0),Numerator(0),Denominator(0),SumX(0), SumX2(0),SumY(0),SumXY(0),Sum2(0),Slope(0),Intercept(0),Y(0);
+
+UA.SharePriceScale = 1;
+if Len=0 then begin
+	LinearRegValue=0;
+	Exit Function;
+end;
+
+if CurrentBar = 1
+then begin
+	SumX = Len*(Len-1)/2;
+	SumX2 = (Len-1)*Len*(2*Len-1)/6;
+end
+else begin
+  SumX = SumX[1];
+  SumX2 = SumX2[1];
+end;
+SumXY = 0;
+SumY = 0;
+for X = 0 to Len-1
+begin
+  Y = Price[X];
+  SumXY = SumXY + X*Y;
+  SumY  = SumY  +   Y;
+end;
+Numerator = Len * SumXY - SumX * SumY;
+Denominator = Len * SumX2 - SumX * SumX;
+if (Denominator <> 0) then
+	Slope = Numerator / Denominator
+else
+	Slope = 0;
+Intercept = (SumY - Slope*SumX) / Len;
+LinearRegValue = Intercept + Slope * ( - TargetB);
+end function
+
+function Lowest
+  'example Ez\Lowest(Low,5)
+  'MenuText Ez\Lowest
+inputs : Price(NumericSeries),Length(NumericSimple);
+var    : Counter(0),MyLow(999999999),MyLowestBar(0);
+
+if CurrentBar = 1
+then begin
+	for Counter = 0 to Length - 1 
+	begin
+		if Price[Counter] < MyLow 
+		then begin
+			MyLow = Price[Counter];
+			MyLowestBar = Counter;
+		end;
+	end;
+end
+else
+begin
+	if Price <= MyLow
+	then begin
+		MyLow = Price;
+		MyLowestBar = 0;
+	end 
+	else 
+	begin
+		MyLowestBar = MyLowestBar[1] +1;
+		if MyLowestBar >= Length 
+		then begin
+			MyLow = 99999999;
+			for Counter = 0 to Length - 1 
+			begin
+				if Price[Counter] < MyLow
+				then begin
+					MyLow = Price[Counter];
+					MyLowestBar = Counter;
+				end;
+			end;
+		end;
+	end;
+end;  
+Lowest = MyLow;
+end function
+
+function FastLowestBar 'helper
+inputs : Price(NumericSeries),Length(NumericSimple);
+var    : Counter(0),MyLow(999999999),MyLowestBar(0);
+
+if CurrentBar = 1
+then begin
+	for Counter = 0 to Length - 1
+	begin
+		if Price[Counter] < MyLow
+		then begin
+			MyLow = Price[Counter];
+			MyLowestBar = Counter;
+		end;
+	end;
+end
+else
+begin
+     MyLow = MyLow[1];
+		if Price <= MyLow
+		then begin
+			MyLow = Price;
+			MyLowestBar = 0;
+		end
+		else
+		begin
+			MyLowestBar = MyLowestBar[1] +1;
+			if MyLowestBar >= Length
+			then begin
+				MyLow = 99999999;
+			for Counter = 0 to Length - 1
+			begin
+				if Price[Counter] < MyLow
+				then begin
+					MyLow = Price[Counter];
+					MyLowestBar = Counter;
+				end;
+			end;
+		end;
+	end;
+end;
+FastLowestBar = MyLowestBar;
+end function
+function LowestBar
+  'example Ez\LowestBar(Low,5)
+  'MenuText Ez\Lowest Bar
+inputs : Price(NumericSeries),Length(NumericSimple);
+LowestBar = FastLowestBar(Price,Length) + CurrentBar - BarNumber;
+end function
+
+function MACD
+  'example Ez\MACD(Close,3,5)
+  'MenuText Ez\Moving Average Convergence/Divergence
+inputs:Price(NumericSeries),FastMA(NumericSimple),SlowMA(NumericSimple);
+MACD = XAverage(Price,FastMA) - XAverage(Price,SlowMA);
+end function
+
+function MACDHist
+  'example Ez\MACDHist(Close,3,5)
+  'MenuText Ez\MACD Histogram
+inputs:Price(NumericSeries),FastMA(NumericSimple),SlowMA(NumericSimple);
+vars: vMACD(0);
+vMACD = XAverage(Price,FastMA) - XAverage(Price,SlowMA);
+MACDHist = vMACD - XAverage( vMACD, FastMA );
+end function
+
+function MedianPrice
+  'example Ez\MedianPrice()
+  'MenuText Ez\Median Price
+MedianPrice = (High + Low) / 2;
+end function
+
+function FiniteVolumeElement
+  'example Ez\FiniteVolumeElement(0.003,22)
+  'MenuText Ez\Finite Volume Element
+inputs:
+        CutOff(.003),
+        Samples( 22 );
+variables:
+        TP( 0 ),
+        MF( 0 ),
+        VolumePlusMinus( 0 ),
+        FVEsum( 0 ),
+        FveFactor( 0 ),
+        FVE( 0 ) ;
+
+TP = ( High  + Low  + Close ) / 3 ;
+MF = ( Close - (High  + Low  ) / 2 )+ TP - TP[1] ;
+if MF > CutOff * Close then
+	FveFactor = 1
+else if MF < -1 * CutOff * Close then
+	FveFactor = -1
+else
+	FveFactor = 0 ;
+if(BarNumber = 2) then
+  FveFactor = 1
+else
+  FveFactor = 0;
+if BarNumber > 1 then
+	VolumePlusMinus = Volume * FveFactor ;
+if BarNumber > Samples then
+	begin
+	FVEsum = Summation( VolumePlusMinus, Samples ) ;
+	FVE = ( FVEsum / (Average( Volume, Samples) * samples ) ) * 100 ;
+	'FiniteVolumeElement = Average(FVE,1 );
+	FiniteVolumeElement = FVE;
+	end ;
+end function
+
+function Spread
+  'Example Misc\Spread() = Spread of two series on one chart
+  'MenuText Misc\Chart Series Spread
+  variables: i(0);
+  UA.MostRecentDataEarlyInArray=0;
+  i = getNumDays()-1;
+  Spread = getClose(i)-getClose2(i);
+end function
+
+Function SWAK
+  'example SCTT\SWAK((H+L)/2,"SMA",4,5,.1) = Swiss Army Knife Indicator
+  'MenuText SCTT\Swiss Army Knife Indicator
+Inputs: Price(NumericSeries), Type, N, Period, delta1;
+  
+Vars:
+  c0(1),
+  c1(0),
+  b0(1),
+  b1(0),
+  b2(0),
+  a1(0),
+  a2(0),
+  alpha(0),
+  beta1(0),
+  gamma1(0),
+  Filt(0);
+
+If Type = "EMA" then begin
+  if CurrentBar <= N then Filt = Price;
+  alpha = (Cosine(360/Period)+Sine(360/Period)-1)/Cosine(360/Period);
+  b0 = alpha;
+  a1 = 1-alpha;
+end;
+if Type = "SMA" then begin
+  if CurrentBar <= N then Filt = Price;
+  c1 = 1/N;
+  b0 = 1/N;
+  a1 = 1;
+end;
+if Type = "Gauss" then begin
+  if CurrentBar <=N then Filt = Price;
+  beta1 = 2.415*(1-Cosine(360/Period));
+  alpha = -beta1 + SquareRoot(beta1*beta1+2*beta1);
+  c0 = alpha*alpha;
+  a1 = 2*(1-alpha);
+  a2 = -(1-alpha)*(1-alpha);
+end;
+if Type = "Butter" then begin
+  if CurrentBar <=N then Filt = Price;
+  beta1 = 2.415*(1-Cosine(360/Period));
+  alpha = -beta1 + SquareRoot(beta1*beta1+2*beta1);
+  c0 = alpha*alpha/4;
+  b1 = 2;
+  b2 = 1;
+  a1 = 2*(1-alpha);
+  a2 = -(1-alpha)*(1-alpha);
+end;
+if Type = "Smooth" then begin
+  c0 = 1/4;
+  b1 = 2;
+  b2 = 1;
+end;
+if Type = "HP" then begin
+  if CurrentBar <=N then Filt = Price;
+  alpha = (Cosine(360/Period)+Sine(360/Period)-1)/Cosine(360/Period);
+  c0 = 1 - alpha/2;
+  b1 = -1;
+  a1 = 1-alpha;
+end;
+if Type = "2PHP" then begin
+  if CurrentBar <=N then Filt = Price;
+  beta1 = 2.415*(1-Cosine(360/Period));
+  alpha = -beta1 + SquareRoot(beta1*beta1+2*beta1);
+  c0 = (1-alpha/2)*(1-alpha/2);
+  b1 = -2;
+  b2 = 1;
+  a1 = 2*(1-alpha);
+  a2 = -(1-alpha)*(1-alpha);
+end;
+if Type = "BP" then begin
+  if CurrentBar <=N then Filt = Price;
+  beta1 = cosine(360/Period);
+  gamma1 = 1/cosine(720*delta1/Period);
+  alpha = gamma1-squareroot(gamma1*gamma1-1);
+  c0 = (1-alpha)/2;
+  b2 = -1;
+  a1 = beat1*(1+alpha);
+  a2 = -alpha;
+end;
+if Type = "BS" then begin
+  if CurrentBar <=N then Filt = Price;
+  beta1 = cosine(360/Period);
+  gamma1 = 1/cosine(720*delta1/Period);
+  alpha = gamma1-squareroot(gamma1*gamma1-1);
+  c0 = (1+alpha)/2;
+  b1 = -2*beta1;
+  b2 = 1;
+  a1 = beta1*(1+alpha);
+  a2 = -alpha;
+end;
+if CurrentBar > N then begin
+  Filt = c0*(b0*price + b1*price[1] + b2*price[2])
+    + a1*Filt[1] + a2*Filt[2] - c1*Price[n];
+end;
+SWAK = Filt;
+end function
+
+

@@ -1,0 +1,3 @@
+flake8
+yapf
+django-debug-toolbar==1.8

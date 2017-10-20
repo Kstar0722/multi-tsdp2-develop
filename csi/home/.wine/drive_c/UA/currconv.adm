@@ -1,0 +1,197 @@
+Version 101
+Declare,AED,Utd. Arab Emir. Dirham,2
+Declare,ARS,Argentine Peso,2
+Declare,ATS,Austrian Schilling,2
+Declare,AUD,Australian Dollar,2
+Declare,BEF,Belgian Franc,2
+Declare,BHD,Bahraini Dinar,2
+Declare,BRL,Brazilian Real,2
+Declare,CAD,Canadian Dollar,2
+Declare,CHF,Swiss Franc,2
+Declare,CLP,Chilean Peso,2
+Declare,CNY,Chinese Yuan Renminbi,2
+Declare,COP,Columbian Peso,2
+Declare,CSK,Czech Koruna Old,2
+Declare,CYP,Cypriot Pound,4
+Declare,CZK,Czech Koruna,2
+Declare,DEM,German Mark,2
+Declare,DKK,Danish Krone,2
+Declare,EEK,Estonian Kroon,4
+Declare,ESP,Spanish Peseta,0
+Declare,EUR,Euro Currency Unit,2
+Declare,FIM,Finnish Markka,2
+Declare,FRF,French Franc,2
+Declare,GBP,British Pound,2
+Declare,GRD,Greek Drachma,2
+Declare,HKD,Hong Kong Dollar,2
+Declare,HUF,Hungarian Forint,2
+Declare,IDR,Indonesian Rupiah,2
+Declare,IEP,Irish Punt,2
+Declare,ILS,Israeli New Shekel,2
+Declare,INR,Indian Rupee,2
+Declare,ITL,Italian Lira,2
+Declare,JPY,Japanese Yen,2
+Declare,KRW,Korean Won,2
+Declare,KWD,Kuwaiti Dinar,2
+Declare,LTL,Lithuanian Lita,4
+Declare,LUF,Luxembourg Franc,2
+Declare,MXP,Mexican Peso,2
+Declare,MYR,Malaysian Ringgit,2
+Declare,NLG,Dutch Guilder,2
+Declare,NOK,Norwegian Kroner,2
+Declare,NZD,New Zealand Dollar,2
+Declare,PHP,Philipine Peso,3
+Declare,PKR,Pakistan Rupee,2
+Declare,PEN,Peruvian Nuevo Sol,2
+Declare,PLZ,Polish Zloty,2
+Declare,PTE,Portuguese Escudo,2
+Declare,RUB,Russian Rouble,2
+Declare,SAR,Saudi Riyal,2
+Declare,SEK,Swedish Krona,2
+Declare,SGD,Singapore Dollar,2
+Declare,SIT,Slovenian Tolar,2
+Declare,SKK,Slovak Koruna,2
+Declare,THB,Thai Bah,2
+Declare,TRY,Turkish New Lira,0
+Declare,TWD,Taiwan Dollar,2
+Declare,USD,US Dollar,2
+Declare,VEB,Venezuelan Bolivar,2
+Declare,ZAR,South African Rand,2
+Declare,LAT,Latvian Lat,2
+Fixed,BEF,EUR,40.3399
+Fixed,DEM,EUR,1.95583
+Fixed,ESP,EUR,166.386
+Fixed,FRF,EUR,6.55957
+Fixed,GRD,EUR,340.750
+Fixed,IEP,EUR,0.787564
+Fixed,ITL,EUR,1936.27
+Fixed,LUF,EUR,40.3399
+Fixed,NLG,EUR,2.20371
+Fixed,ATS,EUR,13.7603
+Fixed,PTE,EUR,200.482
+Fixed,CSK,CZK,1
+Lookup,USD,ZAR,458,0
+Lookup,BRL,USD,355,0
+Lookup,USD,AUD,2250,0
+Lookup,USD,BEF,2251,0
+Lookup,USD,CAD,2252,0
+Lookup,USD,GRD,2253,0
+Lookup,USD,DKK,2254,0
+Lookup,USD,DEM,2255,0
+Lookup,USD,FRF,2256,0
+Lookup,USD,HKD,2257,0
+Lookup,USD,ITL,2258,0
+Lookup,USD,JPY,2259,0
+Lookup,USD,MYR,2260,0
+Lookup,USD,NLG,2261,0
+Lookup,USD,NOK,2262,0
+Lookup,USD,FIM,2263,0
+Lookup,USD,NZD,2264,0
+Lookup,USD,SGD,2265,0
+Lookup,USD,CHF,2266,0
+Lookup,USD,ESP,2267,0
+Lookup,GBP,USD,2268,0
+Lookup,USD,MXP,2269,0
+Lookup,USD,ZAR,2270,0
+Lookup,USD,SEK,2271,0
+Lookup,USD,ATS,2272,0
+Lookup,USD,KRW,2273,0
+Lookup,DEM,DKK,2284,0
+Lookup,DEM,HKD,2287,0
+Lookup,DEM,JPY,2289,0
+Lookup,DEM,NOK,2292,0
+Lookup,DEM,NZD,2294,0
+Lookup,DEM,SGD,2295,0
+Lookup,DEM,CHF,2296,0
+Lookup,DEM,GBP,2298,0
+Lookup,DEM,SEK,2301,0
+Lookup,DEM,USD,2303,0
+Lookup,EUR,AUD,2341,0
+Lookup,EUR,CAD,2342,0
+Lookup,EUR,GRD,2343,0
+Lookup,EUR,DKK,2344,0
+Lookup,EUR,JPY,2345,0
+Lookup,EUR,CHF,2346,0
+Lookup,EUR,GBP,2347,0
+Lookup,EUR,SEK,2348,0
+Lookup,EUR,USD,2349,0
+Lookup,EUR,HKD,2350,0
+Lookup,EUR,MYR,2351,0
+Lookup,EUR,NZD,2352,0
+Lookup,EUR,SGD,2353,0
+Lookup,EUR,MXP,2354,0
+Lookup,EUR,ZAR,2355,0
+Lookup,USD,AED,3300,0
+Lookup,USD,BHD,3301,0
+Lookup,USD,BRL,3302,0
+Lookup,USD,CNY,3303,0
+Lookup,USD,CZK,3304,0
+Lookup,USD,HUF,3306,0
+Lookup,USD,IDR,3307,0
+Lookup,USD,INR,3308,0
+Lookup,USD,KWD,3309,0
+Lookup,USD,PTE,3310,0
+Lookup,USD,PLZ,3311,0
+Lookup,USD,RUB,3312,0
+Lookup,USD,SAR,3313,0
+Lookup,USD,SKK,3314,0
+Lookup,USD,THB,3315,0
+Lookup,USD,TWD,3316,0
+Lookup,USD,VEB,3317,0
+Lookup,USD,ILS,3318,0
+Lookup,USD,ARS,3319,0
+Lookup,USD,PKR,3320,0
+Lookup,USD,LAT,3322,0
+Lookup,EUR,AED,3324,0
+Lookup,EUR,BHD,3325,0
+Lookup,EUR,BRL,3326,0
+Lookup,EUR,CNY,3327,0
+Lookup,EUR,CZK,3328,0
+Lookup,EUR,HUF,3330,0
+Lookup,EUR,IDR,3331,0
+Lookup,EUR,INR,3332,0
+Lookup,EUR,KWD,3333,0
+Lookup,EUR,PLZ,3335,0
+Lookup,EUR,RUB,3336,0
+Lookup,EUR,SAR,3337,0
+Lookup,EUR,SKK,3338,0
+Lookup,EUR,THB,3339,0
+Lookup,EUR,TWD,3340,0
+Lookup,EUR,VEB,3341,0
+Lookup,EUR,ILS,3342,0
+Lookup,EUR,PKR,3344,0
+Lookup,EUR,PEN,3345,0
+Lookup,EUR,LAT,3347,0
+Lookup,JPY,CAD,3503,0
+Lookup,JPY,CNY,3504,0
+Lookup,JPY,DKK,3505,0
+Lookup,JPY,HUF,3507,0
+Lookup,JPY,HKD,3508,0
+Lookup,JPY,MYR,3511,0
+Lookup,JPY,PLZ,3512,0
+Lookup,JPY,NOK,3513,0
+Lookup,JPY,NZD,3515,0
+Lookup,JPY,SGD,3516,0
+Lookup,JPY,CHF,3517,0
+Lookup,ZAR,JPY,3521,0
+Lookup,JPY,SEK,3522,0
+Lookup,CHF,CAD,3525,0
+Lookup,CHF,CNY,3526,0
+Lookup,CHF,DKK,3527,0
+Lookup,CHF,HUF,3529,0
+Lookup,CHF,HKD,3530,0
+Lookup,CHF,MYR,3533,0
+Lookup,CHF,PLZ,3534,0
+Lookup,CHF,NOK,3535,0
+Lookup,CHF,NZD,3537,0
+Lookup,CHF,SGD,3538,0
+Lookup,CHF,THB,3539,0
+Lookup,CHF,SEK,3544,0
+Lookup,USD,TRY,3545,0
+Lookup,USD,CLP,3546,0
+Lookup,USD,PHP,3547,0
+Lookup,USD,COP,3548,0
+Lookup,USD,LTL,3549,0
+Lookup,USD,SIT,3550,0
+Lookup,USD,EEK,3551,0
+Lookup,EUR,CYP,3552,0

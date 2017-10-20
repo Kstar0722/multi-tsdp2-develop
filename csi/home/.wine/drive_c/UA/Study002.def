@@ -1,0 +1,23 @@
+[study]
+DESCRIPTION=Moving Average
+EXTENSION=avg
+INPUT=close 
+OUTPUTS=3
+MIN=0
+MAX=0
+[parm1]
+LABEL=1st period
+CONTROL=EDIT
+TYPE=INT
+DEFAULT=5
+[parm2]
+LABEL=2nd period
+CONTROL=EDIT      
+TYPE=INT
+DEFAULT=10
+[parm3]
+LABEL=3rd period
+CONTROL=EDIT
+TYPE=INT
+DEFAULT=15
+ 

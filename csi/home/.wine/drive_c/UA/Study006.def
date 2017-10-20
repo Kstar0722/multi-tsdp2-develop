@@ -1,0 +1,7 @@
+[study]
+DESCRIPTION=Basis
+EXTENSION=bas
+INPUT=close,cash 
+OUTPUTS=1
+MIN=1
+MAX=1

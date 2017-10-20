@@ -1,0 +1,135 @@
+box: python:3.6-alpine3.6
+
+services:
+    - id: postgres
+      env:
+        POSTGRES_PASSWORD: Temp1234
+
+build:
+  steps:
+    - script:
+        name: environment variables
+        code: |
+          export DEBUG=on
+          export SECRET_KEY="vqy*jdm(t)*uid+(b=rgfb*c7+-okkj#lf_9u_3m*ou&t-(y#h"
+          export DATABASE_URL="postgres://postgres:${POSTGRES_ENV_POSTGRES_PASSWORD}@${POSTGRES_PORT_5432_TCP_ADDR}:${POSTGRES_PORT_5432_TCP_PORT}${POSTGRES_NAME}"
+          export CELERY_BROKER_URL=redis://redis:6379/0
+
+    - script:
+        name: system packages
+        code: |
+          mkdir -p $WERCKER_CACHE_DIR/apk
+          ln -s $WERCKER_CACHE_DIR/apk /etc/apk/cache
+          apk add --update postgresql-client gcc musl-dev postgresql-dev
+
+    - pip-install:
+        requirements_file: "./backend/src/requirements.txt"
+
+    - pip-install:
+        requirements_file: "./backend/src/requirements-dev.txt"
+
+    - script:
+        name: unit tests
+        code: |
+          cd backend/src
+          python ./manage.py test -v2
+
+    - script:
+        name: yapf
+        code: |
+          yapf --diff --recursive --exclude "**/migrations/*" ./backend/src
+          if [ 0 -eq $? ];
+          then
+            echo "Yapf check passed"
+          else
+            echo "Yapf check failed"
+            exit 1
+          fi
+
+    - script:
+        name: flake8
+        code: |
+          flake8 --max-line-length=120 --exclude "**/migrations/*" ./backend/src
+          if [ 0 -eq $? ];
+          then
+            echo "Flake8 check passed"
+          else
+            echo "Flake8 check failed"
+            exit 1
+          fi
+
+  after-steps:
+    - slack-notifier:
+        url: $SLACK_URL
+
+deploy:
+  box: alpine
+
+  steps:
+    - script:
+        name: system packages
+        code: |
+          mkdir -p $WERCKER_CACHE_DIR/apk
+          ln -s $WERCKER_CACHE_DIR/apk /etc/apk/cache
+          apk add --update \
+            bash \
+            curl \
+            gettext \
+            openssh \
+            rsync
+
+    - add-to-known_hosts:
+        hostname: $SSH_HOST
+
+    - add-ssh-key:
+        keyname: BACKEND_KEY
+        host: $SSH_HOST
+
+    - script:
+        name: create environment file
+        code: |
+          envsubst < .env.deploy > .env
+
+    - script:
+        name: rsync files
+        code: rsync -rv --delete --compress . $SSH_USER@$SSH_HOST:~/tsdp
+
+    - script:
+        name: build docker images
+        code: |
+          ssh -tt -l $SSH_USER $SSH_HOST /bin/bash -e <<EOF
+            cd ./tsdp
+            ln -s dc-deploy.yml docker-compose.yml
+            docker-compose build
+            exit 0
+          EOF
+
+    - script:
+        name: start application
+        code: |
+          ssh -tt -l $SSH_USER $SSH_HOST /bin/bash -e <<EOF
+            cd ./tsdp
+            docker-compose stop
+            docker-compose up -d
+            exit 0
+          EOF
+
+    - script:
+        name: run migrations
+        code: |
+          ssh -tt -l $SSH_USER $SSH_HOST /bin/bash -e <<EOF
+            cd ./tsdp
+            docker-compose exec backend python manage.py migrate && exit 0
+          EOF
+
+    - script:
+        name: collect static files
+        code: |
+          ssh -tt -l $SSH_USER $SSH_HOST /bin/bash -e <<EOF
+            cd ./tsdp
+            docker-compose exec backend python manage.py collectstatic --noinput && exit 0
+          EOF
+
+  after-steps:
+    - slack-notifier:
+        url: $SLACK_URL

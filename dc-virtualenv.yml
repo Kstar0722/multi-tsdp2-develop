@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  db:
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data/
+
+  redis:
+    image: redis:3-alpine
+    ports:
+      - 6379:6379
+
+  csi:
+    build: ./csi
+    ports:
+      - 5900:5900
